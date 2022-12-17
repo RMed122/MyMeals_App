@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'profile_screen.dart';
+import 'home_screen.dart';
 import '../services/auth.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ProfileScreen()));
+                            builder: (context) => const HomeScreen()));
                   }).catchError((e) => print(e));
                 },
                 child: const Text('Login')),
@@ -105,17 +105,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () async {
                   try {
                     await auth.signInwithGoogle();
+                    if (!mounted) return;
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ProfileScreen()));
+                            builder: (context) => const HomeScreen()));
                   } catch (e) {
                     if (e is FirebaseAuthException) {
                       //showMessage(e.message!);
                     }
                   }
                 },
-                label: Text(
+                label: const Text(
                   "Sign-in with Google",
                   style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),

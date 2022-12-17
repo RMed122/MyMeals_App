@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'profile_screen.dart';
+import 'home_screen.dart';
 import '../services/auth.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -86,7 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           _emailController.text, _passwordController.text)
                       .then((value) {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const ProfileScreen()));
+                        builder: (context) => const HomeScreen()));
                   }).catchError((e) => print(e));
                 },
                 child: const Text('Register'))
