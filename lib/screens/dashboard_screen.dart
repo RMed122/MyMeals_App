@@ -3,6 +3,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import '../widget/dashboard_card.dart';
+import 'package:mymeals/services/data_services.dart';
 
 class DashBoard extends StatefulWidget {
   static const routeName = '/Dashboard-card';
@@ -12,6 +13,14 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
+  @override
+  void initState() {
+    super.initState();
+    UserDataServices inst = UserDataServices();
+    //inst.addCalories("toast", 100, "Breakfast");
+    inst.getDayWeekCalories();
+  }
+
   int cardCount = 1;
 
   List<int> cardList = [1];

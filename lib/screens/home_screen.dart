@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:mymeals/services/data_services.dart';
 import 'dashboard_screen.dart';
 import 'filters_screen.dart';
 import 'meal_detail_screen.dart';
@@ -16,14 +15,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String? userEmail = "";
   @override
   void initState() {
     super.initState();
-    User? loggedInUser = FirebaseAuth.instance.currentUser;
-    if (loggedInUser != null) {
-      userEmail = loggedInUser.email;
-    }
+    UserDataServices inst = UserDataServices();
+    inst.firstLoginSetUp();
   }
 
   @override
