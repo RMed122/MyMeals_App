@@ -8,17 +8,18 @@ import 'package:mymeals/services/data_services.dart';
 class DashBoard extends StatefulWidget {
   static const routeName = '/Dashboard-card';
 
+  const DashBoard({super.key});
+
   @override
   State<DashBoard> createState() => _DashBoardState();
 }
 
 class _DashBoardState extends State<DashBoard> {
+  UserDataServices inst = UserDataServices();
+  dynamic chartData = [ChartData()];
   @override
   void initState() {
     super.initState();
-    UserDataServices inst = UserDataServices();
-    //inst.addCalories("toast", 100, "Breakfast");
-    inst.getDayWeekCalories();
   }
 
   int cardCount = 1;

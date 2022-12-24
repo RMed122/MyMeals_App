@@ -1,6 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+class ChartData {
+  ChartData({this.x, this.y});
+  final DateTime? x;
+  final int? y;
+}
+
 class UserDataServices {
   final fireStore = FirebaseFirestore.instance;
 
@@ -66,5 +72,32 @@ class UserDataServices {
       }
     });
     return meals.reduce((a, b) => a + b);
+  }
+
+  dynamic plotCaloriesGraph(bool weekly) async {
+    String userDoc = await getUserDoc();
+    DateTime now = DateTime.now();
+    int week = 0;
+    int month = 0;
+    if (weekly) {
+      week = 7;
+    } else {
+      month = 1;
+    }
+    var snapShotsValue = await fireStore
+        .collection('users')
+        .doc(userDoc)
+        .collection("meals")
+        .where("time",
+            isGreaterThanOrEqualTo:
+                DateTime(now.year, now.month - month, now.day - week))
+        .get();
+    List<ChartData> chartData = snapShotsValue.docs
+        .map((e) => ChartData(
+            x: DateTime.fromMillisecondsSinceEpoch(
+                e.data()['time'].millisecondsSinceEpoch),
+            y: e.data()['calories']))
+        .toList();
+    return chartData;
   }
 }
