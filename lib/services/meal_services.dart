@@ -4,7 +4,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import "dart:math";
 
 class MealServices {
-  dynamic barcodeScan() async {
+  dynamic barcodeScan({testMode = false, testBarcode = ""}) async {
     Map<String, Object> returnData = {
       "kcal": "",
       "brand": "",
@@ -12,16 +12,21 @@ class MealServices {
       "image": "",
       "errorBit": 1,
     };
-    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-        "#ff6666", "Cancel", false, ScanMode.DEFAULT);
+    String barcodeScanRes;
+    if (testMode) {
+      barcodeScanRes = testBarcode;
+    } else {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", false, ScanMode.DEFAULT);
+    }
+
     final response = await http.get(Uri.parse(
         "https://world.openfoodfacts.org/api/v0/product/$barcodeScanRes.json"));
     final data = json.decode(response.body);
     if (data["status"] != 1) {
       returnData["errorBit"] = 0;
     } else {
-      returnData["kcal"] =
-          data["product"]["nutriments"]["energy-kcal_100g"].toString();
+      returnData["kcal"] = data["product"]["nutriments"]["energy-kcal_100g"];
       returnData["brand"] = data["product"]["brands"].toString();
       returnData["product"] = data["product"]["product_name"].toString();
       returnData["image"] = data["product"]["image_url"];
