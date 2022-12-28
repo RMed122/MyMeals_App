@@ -5,15 +5,26 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:mymeals/widget/daily_counter.dart';
 import '../widget/dashboard_card.dart';
 import '../widget/daily_counter.dart';
+import 'package:mymeals/services/data_services.dart';
+
 
 class DashBoard extends StatefulWidget {
   static const routeName = '/Dashboard-card';
+
+  const DashBoard({super.key});
 
   @override
   State<DashBoard> createState() => _DashBoardState();
 }
 
 class _DashBoardState extends State<DashBoard> {
+  UserDataServices inst = UserDataServices();
+  dynamic chartData = [ChartData()];
+  @override
+  void initState() {
+    super.initState();
+  }
+
   int cardCount = 1;
   List<int> cardList = [1];
 
