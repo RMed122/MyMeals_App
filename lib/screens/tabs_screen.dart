@@ -23,7 +23,7 @@ class _TabsScreenState extends State<TabsScreen> {
     },
     {
       'page': DashBoard(),
-      'title': 'Test',
+      'title': 'Dashboard',
     },
   ];
   int _selectedPageIndex = 0;
