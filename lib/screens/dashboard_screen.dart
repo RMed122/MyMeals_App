@@ -7,7 +7,6 @@ import '../widget/dashboard_card.dart';
 import '../widget/daily_counter.dart';
 import 'package:mymeals/services/data_services.dart';
 
-
 class DashBoard extends StatefulWidget {
   static const routeName = '/Dashboard-card';
 
@@ -58,18 +57,3 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 }
- /*
- body: SingleChildScrollView(
-        // it didnt fit without it
-        child: Column(
-          children: [
-            dailyCounter(),
-            ListView.builder(
-                itemCount: cardCount,
-                itemBuilder: (BuildContext context, int index) {
-                  return DashBoard_Card();
-                }),
-          ],
-        ),
-      ),
- */

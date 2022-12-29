@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../screens/filters_screen.dart';
+import '../screens/setttings_screen.dart';
 import 'package:mymeals/screens/login_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:mymeals/services/auth.dart';
@@ -37,7 +37,7 @@ class MainDrawer extends StatelessWidget {
             alignment: Alignment.centerLeft,
             color: Theme.of(context).colorScheme.secondary,
             child: Text(
-              'Cooking Up',
+              'My Meals',
               style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 30,
@@ -48,7 +48,7 @@ class MainDrawer extends StatelessWidget {
             height: 20,
           ),
           buildListTile(
-            'Meals',
+            'Home',
             Icons.restaurant,
             () {
               Navigator.of(context).pushReplacementNamed('/');
@@ -59,7 +59,7 @@ class MainDrawer extends StatelessWidget {
             Icons.settings,
             () {
               Navigator.of(context)
-                  .pushReplacementNamed(FiltersScreen.routeName);
+                  .pushReplacementNamed(SettingsScreen.routeName);
             },
           ),
           buildListTile(

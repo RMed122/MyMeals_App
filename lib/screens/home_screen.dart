@@ -1,31 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:mymeals/services/data_services.dart';
 import 'dashboard_screen.dart';
-import 'filters_screen.dart';
+import 'setttings_screen.dart';
 import 'meal_detail_screen.dart';
 import 'categories_screen.dart';
 import 'category_meals_screen.dart';
 import 'tabs_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
+
+  static _HomeScreenState of(BuildContext context) =>
+      context.findAncestorStateOfType<_HomeScreenState>()!;
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  ThemeMode _themeMode = ThemeMode.system;
   @override
   void initState() {
     super.initState();
     UserDataServices inst = UserDataServices();
     inst.firstLoginSetUp();
+    setThemeMode();
+  }
+
+  void setThemeMode() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    late String theme;
+    try {
+      theme = prefs.getString("theme")!;
+    } catch (e) {
+      theme = "system";
+    }
+    if (theme == "system") {
+      _themeMode = ThemeMode.system;
+    } else if (theme == "dark") {
+      _themeMode = ThemeMode.dark;
+    } else {
+      _themeMode = ThemeMode.light;
+    }
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'DeliMeals',
+      title: 'MyMeals',
+      themeMode: _themeMode,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.pink)
             .copyWith(secondary: Colors.amber),
@@ -41,11 +66,12 @@ class _HomeScreenState extends State<HomeScreen> {
             headline6:
                 const TextStyle(fontSize: 24, fontFamily: 'RobotoCondensed')),
       ),
+      darkTheme: ThemeData(brightness: Brightness.dark),
       routes: {
         '/': (ctx) => TabsScreen(),
         CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(),
         MealDetailScreen.routeName: (ctx) => MealDetailScreen(),
-        FiltersScreen.routeName: (ctx) => FiltersScreen(),
+        SettingsScreen.routeName: (ctx) => SettingsScreen(),
         DashBoard.routeName: (ctx) => DashBoard(),
       },
       onGenerateRoute: (settings) {
@@ -59,5 +85,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 CategoriesScreen()); //prevents crashing if it doesnt find any rputes it goes to homescreen
       },
     );
+  }
+
+  void changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
   }
 }

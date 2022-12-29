@@ -51,6 +51,29 @@ class UserDataServices {
     });
   }
 
+  void setTargetCalories(int targetCalories) async {
+    String userDoc = await getUserDoc();
+    fireStore
+        .collection('users')
+        .doc(userDoc)
+        .update({"targetCalories": targetCalories});
+  }
+
+  dynamic getTargetCalories() async {
+    late int targetCalories;
+    String userDoc = await getUserDoc();
+
+    try {
+      final data = fireStore.collection('users').doc(userDoc);
+      await data.get().then((value) {
+        targetCalories = value["targetCalories"];
+      });
+    } catch (e) {
+      targetCalories = 2500;
+    }
+    return targetCalories;
+  }
+
   dynamic getDayWeekCalories({bool weekly = false}) async {
     String userDoc = await getUserDoc();
     DateTime now = DateTime.now();
