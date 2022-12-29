@@ -3,7 +3,7 @@ import 'package:mymeals/services/data_services.dart';
 import 'dashboard_screen.dart';
 import 'setttings_screen.dart';
 import 'meal_detail_screen.dart';
-import 'categories_screen.dart';
+import 'recipes_screen.dart';
 import 'category_meals_screen.dart';
 import 'tabs_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -76,13 +76,13 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       onGenerateRoute: (settings) {
         return MaterialPageRoute(
-          builder: (ctx) => CategoriesScreen(),
+          builder: (ctx) => RecipesScreen(),
         );
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(
             builder: (ctx) =>
-                CategoriesScreen()); //prevents crashing if it doesnt find any rputes it goes to homescreen
+                RecipesScreen()); //prevents crashing if it doesnt find any rputes it goes to homescreen
       },
     );
   }

@@ -3,7 +3,7 @@ import './dashboard_screen.dart';
 import '../widget/main_drawer.dart';
 
 import './favourite_screen.dart';
-import './categories_screen.dart';
+import 'recipes_screen.dart';
 
 class TabsScreen extends StatefulWidget {
   @override
@@ -14,16 +14,16 @@ class _TabsScreenState extends State<TabsScreen> {
   final List<Map<String, Object>> _pages = [
     //here to add new tabs, the styling must be updated in the list line 44
     {
-      'page': CategoriesScreen(),
-      'title': 'Categories',
+      'page': DashBoard(),
+      'title': 'Dashboard',
+    },
+    {
+      'page': RecipesScreen(),
+      'title': 'Recipes',
     },
     {
       'page': const FavouriteScreen(),
-      'title': 'Your Favorite',
-    },
-    {
-      'page': DashBoard(),
-      'title': 'Dashboard',
+      'title': 'Your Data & Trends',
     },
   ];
   int _selectedPageIndex = 0;
@@ -52,18 +52,18 @@ class _TabsScreenState extends State<TabsScreen> {
         items: [
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
-            icon: const Icon(Icons.category),
-            label: 'Categories',
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
-            icon: const Icon(Icons.star),
-            label: 'Favorites',
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
             icon: const Icon(Icons.stacked_bar_chart),
             label: 'Dashboard',
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Theme.of(context).primaryColor,
+            icon: const Icon(Icons.restaurant_menu),
+            label: 'Recipes',
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Theme.of(context).primaryColor,
+            icon: const Icon(Icons.analytics),
+            label: 'Data',
           ),
         ],
       ),
