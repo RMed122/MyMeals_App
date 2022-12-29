@@ -52,6 +52,10 @@ class MyApp extends StatelessWidget {
                 headline6: const TextStyle(
                     fontSize: 24, fontFamily: 'RobotoCondensed')),
           ),
+          darkTheme: ThemeData(
+            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.pink)
+                .copyWith(secondary: Colors.amber),
+          ),
           home: redirectTest()),
     );
   }
