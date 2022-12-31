@@ -17,12 +17,12 @@ void main() {
     });
     test('Random Recipe Function Request does not generate exception',
         () async {
-      dynamic responseData = await MealServices().randomRecipeCheatDay();
+      dynamic responseData = await MealServices().randomRecipeCheatDay("lunch");
       expect(responseData['errorBit'], 1);
     });
 
     test('Random Recipe Function returns an actual meal', () async {
-      dynamic responseData = await MealServices().randomRecipeCheatDay();
+      dynamic responseData = await MealServices().randomRecipeCheatDay("lunch");
       expect(responseData['cheatDay']['idMeal'], isNotNull);
       expect(responseData['errorBit'], 1);
     });

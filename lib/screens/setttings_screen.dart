@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mymeals/screens/home_screen.dart';
+import 'package:mymeals/widget/bottom_navbar.dart';
 import '../widget/main_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mymeals/services/data_services.dart';
@@ -46,17 +47,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (targetCalories != "") {
         inst.setTargetCalories(int.parse(targetCalories));
         dialogMessage = "Data Saved";
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Saved Target Daily Calories'),
+        ));
+        showSaveAlert = false;
+        showCaloriesMenu = false;
       } else {
         dialogMessage = "Please enter a valid number";
+        showSaveAlert = true;
       }
 
       setState(() {});
     } catch (e) {
       dialogMessage = "Please enter a valid number";
+      showSaveAlert = true;
       setState(() {});
     }
-
-    showSaveAlert = true;
   }
 
   @override
@@ -66,6 +72,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: Text('Settings'),
         ),
         drawer: MainDrawer(),
+        bottomNavigationBar: BottomNavBar(),
         body: Stack(
           children: [
             GestureDetector(

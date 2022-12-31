@@ -42,18 +42,18 @@ class MealServices {
     var data = {};
     if (calories == "") {
       final response = await http.get(Uri.parse(
-          "https://api.edamam.com/api/recipes/v2?type=public&q=$ingredients&mealType=$mealTime&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
+          "https://api.edamam.com/api/recipes/v2?type=public&q=$ingredients&mealType=$mealTime&random=true&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
       data = json.decode(response.body);
     } else {
       final response = await http.get(Uri.parse(
-          "https://api.edamam.com/api/recipes/v2?type=public&q=$ingredients&mealType=$mealTime&calories=$calories&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
+          "https://api.edamam.com/api/recipes/v2?type=public&q=$ingredients&mealType=$mealTime&random=true&calories=$calories&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
       data = json.decode(response.body);
     }
     if (data["to"] < 1) {
       returnData["errorBit"] = 0;
     } else {
       List<int> rand =
-          randomizer(data["to"], min(3, int.parse(data["to"].toString())));
+          randomizer(data["to"], min(7, int.parse(data["to"].toString())));
       for (int i in rand) {
         recipeByIngr.add(data["hits"][i]["recipe"]);
       }
@@ -74,15 +74,38 @@ class MealServices {
     return randInts;
   }
 
-  dynamic randomRecipeCheatDay() async {
-    Map<String, Object> returnData = {"errorBit": 1, "cheatDay": {}};
-    try {
-      final response = await http
-          .get(Uri.parse('https://www.themealdb.com/api/json/v1/1/random.php'));
-      final data = json.decode(response.body);
-      returnData["cheatDay"] = data["meals"][0];
-    } catch (e) {
+  // dynamic randomRecipeCheatDay() async {
+  //   Map<String, Object> returnData = {"errorBit": 1, "cheatDay": {}};
+  //   try {
+  //     final response = await http
+  //         .get(Uri.parse('https://www.themealdb.com/api/json/v1/1/random.php'));
+  //     final data = json.decode(response.body);
+  //     returnData["cheatDay"] = data["meals"][0];
+  //   } catch (e) {
+  //     returnData["errorBit"] = 0;
+  //   }
+  //   return returnData;
+  // }
+
+  dynamic randomRecipeCheatDay(String mealTime) async {
+    Map<String, Object> returnData = {"errorBit": 1, "recipeByIngr": []};
+    var recipeByIngr = [];
+    var data = {};
+    String calories = "400-1700";
+
+    final response = await http.get(Uri.parse(
+        "https://api.edamam.com/api/recipes/v2?type=public&mealType=$mealTime&calories=$calories&random=true&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
+    data = json.decode(response.body);
+
+    if (data["to"] < 1) {
       returnData["errorBit"] = 0;
+    } else {
+      List<int> rand =
+          randomizer(data["to"], min(7, int.parse(data["to"].toString())));
+      for (int i in rand) {
+        recipeByIngr.add(data["hits"][i]["recipe"]);
+      }
+      returnData["recipeByIngr"] = recipeByIngr;
     }
     return returnData;
   }

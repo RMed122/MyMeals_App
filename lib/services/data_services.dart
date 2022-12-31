@@ -41,14 +41,23 @@ class UserDataServices {
     return userDoc;
   }
 
-  void addCalories(String mealName, int calories, String mealType) async {
-    String userDoc = await getUserDoc();
-    fireStore.collection('users').doc(userDoc).collection("meals").add({
-      'time': Timestamp.now(),
-      'name': mealName,
-      'calories': calories,
-      'type': mealType
-    });
+  dynamic addCalories(String mealName, int calories, String mealType, int carbs,
+      int protein, int fat) async {
+    try {
+      String userDoc = await getUserDoc();
+      fireStore.collection('users').doc(userDoc).collection("meals").add({
+        'time': Timestamp.now(),
+        'name': mealName,
+        'calories': calories,
+        'carbs': carbs,
+        'protein': protein,
+        'fat': fat,
+        'type': mealType
+      });
+      return 1;
+    } catch (e) {
+      return 0;
+    }
   }
 
   void setTargetCalories(int targetCalories) async {
