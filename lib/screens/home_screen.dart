@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mymeals/screens/favourite_screen.dart';
 import 'package:mymeals/services/data_services.dart';
 import 'dashboard_screen.dart';
 import 'setttings_screen.dart';
-import 'meal_detail_screen.dart';
 import 'recipes_screen.dart';
-import 'category_meals_screen.dart';
 import 'tabs_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -46,9 +45,33 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {});
   }
 
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Are you sure?'),
+            content: const Text('Do you want to exit the App'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('No'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Yes'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return //WillPopScope(
+        //onWillPop: _onWillPop,
+        //child:
+        MaterialApp(
       title: 'MyMeals',
       themeMode: _themeMode,
       theme: ThemeData(
@@ -69,10 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
       darkTheme: ThemeData(brightness: Brightness.dark),
       routes: {
         '/': (ctx) => TabsScreen(),
-        CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(),
-        MealDetailScreen.routeName: (ctx) => MealDetailScreen(),
         SettingsScreen.routeName: (ctx) => SettingsScreen(),
         DashBoard.routeName: (ctx) => DashBoard(),
+        FavouriteScreen.routeName: (ctx) => FavouriteScreen()
       },
       onGenerateRoute: (settings) {
         return MaterialPageRoute(
@@ -84,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (ctx) =>
                 RecipesScreen()); //prevents crashing if it doesnt find any rputes it goes to homescreen
       },
-    );
+    ); //);
   }
 
   void changeTheme(ThemeMode themeMode) {
