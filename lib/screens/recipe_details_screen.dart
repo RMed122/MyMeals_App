@@ -156,7 +156,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen>
                           Container(
                             margin: EdgeInsets.only(left: 5),
                             child: Text(
-                              widget.data.calories,
+                              "${widget.data.calories} | Portions: ${widget.data.nutriments[0].size}",
                               style:
                                   TextStyle(color: Colors.white, fontSize: 12),
                             ),
@@ -166,7 +166,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen>
                           Container(
                             margin: EdgeInsets.only(left: 5),
                             child: Text(
-                              widget.data.time,
+                              '${widget.data.time} min',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 12),
                             ),
@@ -189,7 +189,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen>
                       GestureDetector(
                           onTap: () {
                             launchUrl(Uri.parse(widget.data.description
-                                .replaceFirst("http", "https")));
+                                .replaceFirst("http:", "https:")));
                           },
                           onLongPress: () async {
                             await Clipboard.setData(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mymeals/screens/dashboard_screen.dart';
 import '../widget/main_drawer.dart';
-import 'package:mymeals/screens/favourite_screen.dart';
+import 'package:mymeals/screens/data_screen.dart';
 import 'package:mymeals/screens/recipes_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -21,7 +21,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       'title': 'Recipes',
     },
     {
-      'page': const FavouriteScreen(),
+      'page': const DataScreen(),
       'title': 'Your Data & Trends',
     },
   ];

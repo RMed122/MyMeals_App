@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import './dashboard_screen.dart';
 import '../widget/main_drawer.dart';
-import './favourite_screen.dart';
+import 'data_screen.dart';
 import 'recipes_screen.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -21,7 +21,7 @@ class _TabsScreenState extends State<TabsScreen> {
       'title': 'Recipes',
     },
     {
-      'page': FavouriteScreen(),
+      'page': DataScreen(),
       'title': 'Your Data & Trends',
     },
   ];
