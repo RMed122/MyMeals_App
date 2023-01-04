@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mymeals/screens/favourite_screen.dart';
+import 'package:mymeals/screens/data_screen.dart';
 import 'package:mymeals/services/data_services.dart';
 import 'dashboard_screen.dart';
 import 'setttings_screen.dart';
@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
         '/': (ctx) => TabsScreen(),
         SettingsScreen.routeName: (ctx) => SettingsScreen(),
         DashBoard.routeName: (ctx) => DashBoard(),
-        FavouriteScreen.routeName: (ctx) => FavouriteScreen()
+        DataScreen.routeName: (ctx) => DataScreen()
       },
       onGenerateRoute: (settings) {
         return MaterialPageRoute(

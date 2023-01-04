@@ -366,7 +366,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
                   onPressed: () {
                     showHealthyDialog = false;
                     setState(() {});
-                    searchbyIngr();
+                    searchHealthy();
                   },
                   child: const Text('Search'),
                 ),

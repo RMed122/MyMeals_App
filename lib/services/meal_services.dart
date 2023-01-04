@@ -40,13 +40,14 @@ class MealServices {
     Map<String, Object> returnData = {"errorBit": 1, "recipeByIngr": []};
     var recipeByIngr = [];
     var data = {};
+    String rangeCalories = "0-$calories";
     if (calories == "") {
       final response = await http.get(Uri.parse(
           "https://api.edamam.com/api/recipes/v2?type=public&q=$ingredients&mealType=$mealTime&random=true&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
       data = json.decode(response.body);
     } else {
       final response = await http.get(Uri.parse(
-          "https://api.edamam.com/api/recipes/v2?type=public&q=$ingredients&mealType=$mealTime&random=true&calories=$calories&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
+          "https://api.edamam.com/api/recipes/v2?type=public&q=$ingredients&mealType=$mealTime&random=true&calories=$rangeCalories&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
       data = json.decode(response.body);
     }
     if (data["to"] < 1) {

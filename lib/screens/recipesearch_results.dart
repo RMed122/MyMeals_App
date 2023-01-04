@@ -67,6 +67,14 @@ class _RecipeSearchResultScreenState extends State<RecipeSearchResultScreen> {
       ingridients.add({'name': ingr['food'], 'size': ingr['text']});
     }
 
+    nutriments
+        .add({'name': "Portions", 'size': data['yield'].round().toString()});
+    nutriments.add({
+      'name': "Calories per portion",
+      'size': (data_nutr["ENERC_KCAL"]['quantity'] / 4).round().toString() +
+          data_nutr["ENERC_KCAL"]['unit'],
+    });
+
     for (var nutr in nutriments_inc) {
       nutriments.add({
         'name': data_nutr[nutr]["label"],
