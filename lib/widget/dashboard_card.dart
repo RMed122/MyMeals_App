@@ -7,58 +7,57 @@ import '../screens/dashboard_screen.dart';
 import './insertData.dart';
 
 class DashBoard_Card extends StatelessWidget {
-  DashBoard_Card({super.key});
+  DashBoard_Card({super.key, required this.calories});
+  final String calories;
 
   @override
   Widget build(BuildContext context) {
-    final nutrients = ModalRoute.of(context)!.settings.arguments as List;
-    if (nutrients[0] != null) {
-      return InkWell(
-        child: SizedBox(
-          width: double.infinity,
-          height: 250,
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            elevation: 4,
-            margin: EdgeInsets.all(10),
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.all(10),
-                  child: Text(
-                    'Orange Juice',
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                    ),
+    return InkWell(
+      child: SizedBox(
+        width: double.infinity,
+        height: 250,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          elevation: 4,
+          margin: EdgeInsets.all(10),
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.all(10),
+                child: Text(
+                  'Orange Juice',
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                Divider(
-                  height: 10,
-                  indent: 15,
-                  endIndent: 15,
-                  color: Colors.lightBlue,
-                ),
-                Stack(
-                  children: <Widget>[
-                    Container(
-                      alignment: Alignment.bottomLeft,
-                      margin: EdgeInsets.all(20),
-                      child: const Text(
-                        'Calories\n' 'Carbs\n' 'Fats\n' 'Proteins\n',
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
+              ),
+              Divider(
+                height: 10,
+                indent: 15,
+                endIndent: 15,
+                color: Colors.lightBlue,
+              ),
+              Stack(
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.bottomLeft,
+                    margin: EdgeInsets.all(20),
+                    child: const Text(
+                      'Calories\n' 'Carbs\n' 'Fats\n' 'Proteins\n',
+                      style: TextStyle(
+                        fontSize: 20,
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.bottomRight,
-                      margin: EdgeInsets.all(20),
-                      child: Text(
-                        //'diomerda',
-                        nutrients[0] +
+                  ),
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    margin: EdgeInsets.all(20),
+                    child: const Text(
+                      'tetx',
+                      /*nutrients[0] +
                             'kcal\n' +
                             nutrients[1] +
                             'g\n' +
@@ -67,22 +66,16 @@ class DashBoard_Card extends StatelessWidget {
                             nutrients[3] +
                             'g\n',
                         style: TextStyle(
-                          fontSize: 20,
-                        ),
-                      ),
+                          fontSize: 20,*/
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ), //,
-      );
-    } else {
-      return const Scaffold(
-        body: Text('insert meal'),
-      );
-    }
+        ),
+      ), //,
+    );
   }
 }
 

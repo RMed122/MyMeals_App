@@ -1,5 +1,3 @@
-import 'dart:js';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -52,13 +50,14 @@ class _DashBoardState extends State<DashBoard> {
         child: Column(
           children: [
             dailyCounter(),
-            ListView.builder(
+            FloatingActionButton(onPressed: inst.getMealFromDB()),
+            /*ListView.builder(
               shrinkWrap: true,
               itemCount: cardCount,
               itemBuilder: (BuildContext context, int index) {
-                return DashBoard_Card();
+                //return DashBoard_Card(calories: ,);
               },
-            ),
+            ),*/
           ],
         ),
       ),
