@@ -4,17 +4,20 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import "dart:math";
 
 class MealServices {
-  dynamic barcodeScan({testMode = false, testBarcode = ""}) async {
+  dynamic barcodeScan({manualMode = false, manualBarcode = ""}) async {
     Map<String, Object> returnData = {
-      "kcal": "",
+      "calories": 0,
+      "fat": 0,
+      "carbs": 0,
+      "protein": 0,
       "brand": "",
       "product": "",
       "image": "",
       "errorBit": 1,
     };
     String barcodeScanRes;
-    if (testMode) {
-      barcodeScanRes = testBarcode;
+    if (manualMode) {
+      barcodeScanRes = manualBarcode;
     } else {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           "#ff6666", "Cancel", false, ScanMode.DEFAULT);
@@ -26,10 +29,16 @@ class MealServices {
     if (data["status"] != 1) {
       returnData["errorBit"] = 0;
     } else {
-      returnData["kcal"] = data["product"]["nutriments"]["energy-kcal_100g"];
-      returnData["brand"] = data["product"]["brands"].toString();
+      returnData["brand"] = data["product"]["product_name"].toString();
       returnData["product"] = data["product"]["product_name"].toString();
       returnData["image"] = data["product"]["image_url"];
+      returnData["calories"] =
+          data["product"]["nutriments"]["energy-kcal_100g"].round();
+      returnData["protein"] =
+          data["product"]["nutriments"]["proteins_100g"].round();
+      returnData["fat"] = data["product"]["nutriments"]["fat_100g"].round();
+      returnData["carbs"] =
+          data["product"]["nutriments"]["carbohydrates_100g"].round();
     }
 
     return returnData;

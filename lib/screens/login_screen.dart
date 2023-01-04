@@ -73,16 +73,22 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             ElevatedButton(
                 onPressed: () async {
-                  final isValid = _formKey.currentState!.validate();
-                  await auth
-                      .handleSignInEmail(
-                          _emailController.text, _passwordController.text)
-                      .then((value) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeScreen()));
-                  }).catchError((e) => print(e));
+                  try {
+                    final isValid = _formKey.currentState!.validate();
+                    await auth
+                        .handleSignInEmail(
+                            _emailController.text, _passwordController.text)
+                        .then((value) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen()));
+                    });
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Error while logging in, please try again'),
+                    ));
+                  }
                 },
                 child: const Text('Login')),
             TextButton(
@@ -111,9 +117,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         MaterialPageRoute(
                             builder: (context) => const HomeScreen()));
                   } catch (e) {
-                    if (e is FirebaseAuthException) {
-                      //showMessage(e.message!);
-                    }
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Error in Google SignIn'),
+                    ));
                   }
                 },
                 label: const Text(

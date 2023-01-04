@@ -5,13 +5,13 @@ void main() {
   group('Meal Services', () {
     test("Barcode Scanning handles not found product", () async {
       dynamic responseData = await MealServices()
-          .barcodeScan(testMode: true, testBarcode: "FALSE BARCODE");
+          .barcodeScan(manualMode: true, manualBarcode: "FALSE BARCODE");
       expect(responseData['errorBit'], 0);
     });
 
     test("Barcode Scanning returns product information", () async {
       dynamic responseData = await MealServices()
-          .barcodeScan(testMode: true, testBarcode: "8002330009533");
+          .barcodeScan(manualMode: true, manualBarcode: "8002330009533");
       expect(responseData['kcal'], greaterThanOrEqualTo(0));
       expect(responseData['errorBit'], 1);
     });

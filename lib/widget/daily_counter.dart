@@ -1,10 +1,30 @@
-import 'package:flutter/rendering.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
+import 'package:mymeals/services/data_services.dart';
 
-class dailyCounter extends StatelessWidget {
-  const dailyCounter({super.key});
+class DailyCounter extends StatefulWidget {
+  static const routeName = '/dailyCounter';
+  const DailyCounter({super.key});
+
+  @override
+  State<DailyCounter> createState() => _DailyCounterState();
+}
+
+class _DailyCounterState extends State<DailyCounter> {
+  UserDataServices inst = UserDataServices();
+  int targetCal = 0;
+  int calories = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    setCounterData();
+  }
+
+  void setCounterData() async {
+    targetCal = await inst.getTargetCalories();
+    calories = await inst.getDayWeekmonthNutri("calories");
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +37,16 @@ class dailyCounter extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
             ),
             elevation: 4,
-            margin: EdgeInsets.fromLTRB(10, 5, 10, 10),
+            margin: const EdgeInsets.fromLTRB(10, 5, 10, 10),
             child: Row(
               children: [
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
                     child: Text(
-                      'Objective calories:',
+                      'Objective calories:$targetCal',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
@@ -41,11 +61,11 @@ class dailyCounter extends StatelessWidget {
                 ),
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
                     child: Text(
-                      'Calories ingested:',
+                      'Calories ingested: $calories',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
@@ -60,11 +80,11 @@ class dailyCounter extends StatelessWidget {
                 ),
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
                     child: Text(
-                      'Calorie difference:',
+                      'Calorie difference:\n${calories - targetCal}',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),

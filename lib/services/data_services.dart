@@ -168,7 +168,7 @@ class UserDataServices {
     return chartData;
   }
 
-  dynamic getMealFromDB() async {
+  dynamic getDailyMeals() async {
     String userDoc = await getUserDoc();
     DateTime now = DateTime.now();
     final data = fireStore
@@ -177,13 +177,15 @@ class UserDataServices {
         .collection("meals")
         .where("time",
             isGreaterThanOrEqualTo: DateTime(now.year, now.month, now.day));
-    //late dynamic meals;
+    late dynamic meals = [];
     await data.get().then((value) {
-      print(value);
+      for (dynamic meal in value.docs) {
+        meals.add(meal.data());
+      }
     });
-    //if (meals.isEmpty) {
-    //meals = [''];
-    // }
-    //print(meals);
+    if (meals.isEmpty) {
+      meals = [0];
+    }
+    return meals;
   }
 }

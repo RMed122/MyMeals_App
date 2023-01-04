@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:mymeals/widget/daily_counter.dart';
-import '../widget/dashboard_card.dart';
-import '../widget/daily_counter.dart';
-import '../services/data_services.dart';
-import '../widget/dashboard_card.dart';
+import 'package:mymeals/widget/dashboard_card.dart';
+import 'package:mymeals/services/data_services.dart';
+import 'package:mymeals/widget/insertproduct_popup.dart';
 
 class DashBoard extends StatefulWidget {
   static const routeName = '/Dashboard-card';
@@ -18,46 +14,56 @@ class DashBoard extends StatefulWidget {
 
 class _DashBoardState extends State<DashBoard> {
   UserDataServices inst = UserDataServices();
-  dynamic chartData = [ChartData()];
+  List<Widget> mealList = [];
 
   @override
   void initState() {
     super.initState();
+    addMealtoList();
   }
 
-  int cardCount = 0;
-  List<int> cardList = [0];
+  void addMealtoList() async {
+    mealList = [];
+    dynamic meals = await inst.getDailyMeals();
+    if (meals[0] != 0) {
+      for (var meal in meals) {
+        mealList.add(DashBoardCard(
+            mealname: meal["name"].toString(),
+            calories: meal["calories"].toString(),
+            protein: meal["protein"].toString(),
+            carbs: meal["carbs"].toString(),
+            fat: meal["fat"].toString()));
+      }
+    }
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           showDialog(
             context: context,
-            builder: (BuildContext context) => buildPopupDialog(context),
+            //builder: (BuildContext context) => buildPopupDialog(context),
+            builder: (BuildContext context) => InsertProdPopup(),
           );
-          cardCount += 1;
-          cardList.add(cardCount);
-
-          setState(() {});
-          print(cardCount);
         },
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            dailyCounter(),
-            FloatingActionButton(onPressed: inst.getMealFromDB()),
-            /*ListView.builder(
-              shrinkWrap: true,
-              itemCount: cardCount,
-              itemBuilder: (BuildContext context, int index) {
-                //return DashBoard_Card(calories: ,);
-              },
-            ),*/
+            const DailyCounter(),
+            ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: mealList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return mealList[index];
+                })
           ],
         ),
       ),

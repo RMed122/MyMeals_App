@@ -1,21 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:mymeals/services/data_services.dart';
+import 'package:mymeals/services/meal_services.dart';
 import 'package:mymeals/widget/insertData.dart';
-import '../screens/dashboard_screen.dart';
-import './insertData.dart';
 
-class DashBoard_Card extends StatelessWidget {
-  DashBoard_Card({super.key, required this.calories});
+class DashBoardCard extends StatefulWidget {
+  const DashBoardCard({
+    super.key,
+    required this.mealname,
+    required this.calories,
+    required this.protein,
+    required this.carbs,
+    required this.fat,
+  });
   final String calories;
+  final String mealname;
+  final String protein;
+  final String carbs;
+  final String fat;
+
+  @override
+  State<DashBoardCard> createState() => _DashBoardCardState();
+}
+
+class _DashBoardCardState extends State<DashBoardCard> {
+  UserDataServices inst = UserDataServices();
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       child: SizedBox(
         width: double.infinity,
-        height: 250,
+        height: 290,
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
@@ -27,14 +42,14 @@ class DashBoard_Card extends StatelessWidget {
               Container(
                 margin: EdgeInsets.all(10),
                 child: Text(
-                  'Orange Juice',
-                  style: TextStyle(
+                  widget.mealname,
+                  style: const TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              Divider(
+              const Divider(
                 height: 10,
                 indent: 15,
                 endIndent: 15,
@@ -54,19 +69,10 @@ class DashBoard_Card extends StatelessWidget {
                   ),
                   Container(
                     alignment: Alignment.bottomRight,
-                    margin: EdgeInsets.all(20),
-                    child: const Text(
-                      'tetx',
-                      /*nutrients[0] +
-                            'kcal\n' +
-                            nutrients[1] +
-                            'g\n' +
-                            nutrients[2] +
-                            'g\n' +
-                            nutrients[3] +
-                            'g\n',
-                        style: TextStyle(
-                          fontSize: 20,*/
+                    margin: const EdgeInsets.all(20),
+                    child: Text(
+                      '${widget.calories} kcal\n${widget.carbs} g\n${widget.fat} g\n${widget.protein} g\n',
+                      style: const TextStyle(fontSize: 20),
                     ),
                   ),
                 ],
@@ -77,49 +83,4 @@ class DashBoard_Card extends StatelessWidget {
       ), //,
     );
   }
-}
-
-Widget buildPopupDialog(BuildContext context) {
-  return AlertDialog(
-    title: const Text('Insert a new meal'),
-    content: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        FloatingActionButton.extended(
-          onPressed: () {
-            //_InsertData(context);
-          },
-          label: const Text('Use barcode scanner'),
-          icon: const Icon(Icons.camera_alt_outlined),
-          backgroundColor: Colors.pink,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: FloatingActionButton.extended(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) => InsertData(),
-              );
-            },
-            label: const Text('Manual Insert'),
-            icon: const Icon(Icons.addchart),
-            backgroundColor: Colors.pink,
-          ),
-        ),
-      ],
-    ),
-    actions: [
-      TextButton(
-        style: TextButton.styleFrom(
-          foregroundColor: Colors.blue, // foreground
-        ),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        child: const Text('Close'),
-      ),
-    ],
-  );
 }
