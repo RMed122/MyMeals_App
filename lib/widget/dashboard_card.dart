@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:mymeals/widget/insertData.dart';
 import '../screens/dashboard_screen.dart';
+import './insertData.dart';
 
 class DashBoard_Card extends StatelessWidget {
-  final List<String> mealsEaten = ['Pasta', 'ham', 'cake'];
+  DashBoard_Card({super.key, required this.calories});
+  final String calories;
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -41,7 +45,7 @@ class DashBoard_Card extends StatelessWidget {
                   Container(
                     alignment: Alignment.bottomLeft,
                     margin: EdgeInsets.all(20),
-                    child: Text(
+                    child: const Text(
                       'Calories\n' 'Carbs\n' 'Fats\n' 'Proteins\n',
                       style: TextStyle(
                         fontSize: 20,
@@ -51,11 +55,18 @@ class DashBoard_Card extends StatelessWidget {
                   Container(
                     alignment: Alignment.bottomRight,
                     margin: EdgeInsets.all(20),
-                    child: Text(
-                      '200kj\n' '20g\n' '10g\n' '15g\n',
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
+                    child: const Text(
+                      'tetx',
+                      /*nutrients[0] +
+                            'kcal\n' +
+                            nutrients[1] +
+                            'g\n' +
+                            nutrients[2] +
+                            'g\n' +
+                            nutrients[3] +
+                            'g\n',
+                        style: TextStyle(
+                          fontSize: 20,*/
                     ),
                   ),
                 ],
@@ -63,7 +74,52 @@ class DashBoard_Card extends StatelessWidget {
             ],
           ),
         ),
-      ),
+      ), //,
     );
   }
+}
+
+Widget buildPopupDialog(BuildContext context) {
+  return AlertDialog(
+    title: const Text('Insert a new meal'),
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        FloatingActionButton.extended(
+          onPressed: () {
+            //_InsertData(context);
+          },
+          label: const Text('Use barcode scanner'),
+          icon: const Icon(Icons.camera_alt_outlined),
+          backgroundColor: Colors.pink,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: FloatingActionButton.extended(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => InsertData(),
+              );
+            },
+            label: const Text('Manual Insert'),
+            icon: const Icon(Icons.addchart),
+            backgroundColor: Colors.pink,
+          ),
+        ),
+      ],
+    ),
+    actions: [
+      TextButton(
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.blue, // foreground
+        ),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: const Text('Close'),
+      ),
+    ],
+  );
 }

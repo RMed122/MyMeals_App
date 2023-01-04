@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -83,12 +85,38 @@ class UserDataServices {
     return targetCalories;
   }
 
-  dynamic getDayWeekCalories({bool weekly = false}) async {
+  dynamic getMissedTarget(bool weekly) async {
+    int target = await getTargetCalories();
+    List<int> meals = await getDayWeekmonthNutri("calories",
+        weekly: weekly, monthly: !weekly, returnList: true);
+    int counter = 0;
+    for (var meal in meals) {
+      if (meal > target) {
+        counter++;
+      }
+    }
+    return counter;
+  }
+
+  dynamic getMostCaloric(bool weekly) async {
+    List<int> meals = await getDayWeekmonthNutri("calories",
+        weekly: weekly, monthly: !weekly, returnList: true);
+
+    return meals.reduce(max);
+  }
+
+  dynamic getDayWeekmonthNutri(String nutriDoc,
+      {bool weekly = false,
+      bool monthly = false,
+      bool returnList = false}) async {
     String userDoc = await getUserDoc();
     DateTime now = DateTime.now();
     int weeklyInt = 0;
+    int monthInt = 0;
     if (weekly) {
       weeklyInt = 7;
+    } else if (monthly) {
+      monthInt = 1;
     }
     final data = fireStore
         .collection('users')
@@ -96,17 +124,24 @@ class UserDataServices {
         .collection("meals")
         .where("time",
             isGreaterThanOrEqualTo:
-                DateTime(now.year, now.month, now.day - weeklyInt));
+                DateTime(now.year, now.month - monthInt, now.day - weeklyInt));
     late List<int> meals = [];
     await data.get().then((value) {
       for (dynamic meal in value.docs) {
-        meals.add(meal.get('calories'));
+        meals.add(meal.get(nutriDoc));
       }
     });
-    return meals.reduce((a, b) => a + b);
+    if (meals.isEmpty) {
+      meals = [0];
+    }
+    if (returnList) {
+      return meals;
+    } else {
+      return meals.reduce((a, b) => a + b);
+    }
   }
 
-  dynamic plotCaloriesGraph(bool weekly) async {
+  dynamic plotCaloriesGraph(bool weekly, String nutriDoc) async {
     String userDoc = await getUserDoc();
     DateTime now = DateTime.now();
     int week = 0;
@@ -128,8 +163,27 @@ class UserDataServices {
         .map((e) => ChartData(
             x: DateTime.fromMillisecondsSinceEpoch(
                 e.data()['time'].millisecondsSinceEpoch),
-            y: e.data()['calories']))
+            y: e.data()[nutriDoc]))
         .toList();
     return chartData;
+  }
+
+  dynamic getMealFromDB() async {
+    String userDoc = await getUserDoc();
+    DateTime now = DateTime.now();
+    final data = fireStore
+        .collection('users')
+        .doc(userDoc)
+        .collection("meals")
+        .where("time",
+            isGreaterThanOrEqualTo: DateTime(now.year, now.month, now.day));
+    //late dynamic meals;
+    await data.get().then((value) {
+      print(value);
+    });
+    //if (meals.isEmpty) {
+    //meals = [''];
+    // }
+    //print(meals);
   }
 }
