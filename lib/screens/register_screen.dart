@@ -86,7 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         .handleSignUp(
                             _emailController.text, _passwordController.text)
                         .then((value) {
-                      Navigator.of(context).push(MaterialPageRoute(
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (context) => const HomeScreen()));
                     });
                   } catch (e) {

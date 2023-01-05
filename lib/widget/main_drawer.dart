@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mymeals/screens/dashboard_screen.dart';
 import '../screens/setttings_screen.dart';
 import 'package:mymeals/screens/login_screen.dart';
 import 'package:provider/provider.dart';
@@ -48,15 +49,20 @@ class MainDrawer extends StatelessWidget {
             'Home',
             Icons.restaurant,
             () {
-              Navigator.of(context).pushReplacementNamed('/');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DashBoard()),
+              );
             },
           ),
           buildListTile(
             'Settings',
             Icons.settings,
             () {
-              Navigator.of(context)
-                  .pushReplacementNamed(SettingsScreen.routeName);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsScreen()),
+              );
             },
           ),
           buildListTile(
