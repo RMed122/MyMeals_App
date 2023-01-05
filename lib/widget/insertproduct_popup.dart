@@ -50,106 +50,108 @@ class _InsertProdPopupState extends State<InsertProdPopup> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Insert a new meal'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Visibility(
-              visible: !showWeightDialog,
-              child: FloatingActionButton.extended(
-                onPressed: () async {
-                  productDetails = await inst.barcodeScan();
-                  if (productDetails["errorBit"] == 1) {
-                    showWeightDialog = true;
-                  }
-                  setState(() {});
-                },
-                label: const Text('Use barcode scanner'),
-                icon: const Icon(Icons.camera_alt_outlined),
-                backgroundColor: Colors.pink,
-              )),
-          Visibility(
-              visible: !showWeightDialog,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10),
+    return SingleChildScrollView(
+      child: AlertDialog(
+        title: const Text('Insert a new meal'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Visibility(
+                visible: !showWeightDialog,
                 child: FloatingActionButton.extended(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => InsertData(),
-                    );
+                  onPressed: () async {
+                    productDetails = await inst.barcodeScan();
+                    if (productDetails["errorBit"] == 1) {
+                      showWeightDialog = true;
+                    }
+                    setState(() {});
                   },
-                  label: const Text('Manual Insert'),
-                  icon: const Icon(Icons.addchart),
+                  label: const Text('Use barcode scanner'),
+                  icon: const Icon(Icons.camera_alt_outlined),
                   backgroundColor: Colors.pink,
+                )),
+            Visibility(
+                visible: !showWeightDialog,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: FloatingActionButton.extended(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => InsertData(),
+                      );
+                    },
+                    label: const Text('Manual Insert'),
+                    icon: const Icon(Icons.addchart),
+                    backgroundColor: Colors.pink,
+                  ),
+                )),
+            Visibility(
+              visible: showWeightDialog,
+              child: SingleChildScrollView(
+                  child: SizedBox(
+                      child: Column(children: [
+                Text("Found product: ${productDetails['brand']}"),
+                TextField(
+                  onChanged: (value) {
+                    weight = int.parse(value);
+                    setState(() {});
+                  },
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Consumed ammount in gramms',
+                  ),
                 ),
-              )),
+                DropdownButton(
+                  value: mealTime,
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  items: mealTimeList.map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(items),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      mealTime = newValue!;
+                    });
+                  },
+                ),
+              ]))),
+            )
+          ],
+        ),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.blue, // foreground
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Close'),
+          ),
           Visibility(
-            visible: showWeightDialog,
-            child: SingleChildScrollView(
-                child: SizedBox(
-                    child: Column(children: [
-              Text("Found product: ${productDetails['brand']}"),
-              TextField(
-                onChanged: (value) {
-                  weight = int.parse(value);
-                  setState(() {});
-                },
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
-                ],
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Consumed ammount in gramms',
+              visible: showWeightDialog,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.blue, // foreground
                 ),
-              ),
-              DropdownButton(
-                value: mealTime,
-                icon: const Icon(Icons.keyboard_arrow_down),
-                items: mealTimeList.map((String items) {
-                  return DropdownMenuItem(
-                    value: items,
-                    child: Text(items),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    mealTime = newValue!;
-                  });
+                onPressed: () {
+                  saveMeal();
+                  showWeightDialog = false;
+                  setState(() {});
+                  Navigator.of(context).pop();
                 },
-              ),
-            ]))),
-          )
+                child: const Text('Save Meal'),
+              ))
         ],
       ),
-      actions: [
-        TextButton(
-          style: TextButton.styleFrom(
-            foregroundColor: Colors.blue, // foreground
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('Close'),
-        ),
-        Visibility(
-            visible: showWeightDialog,
-            child: TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.blue, // foreground
-              ),
-              onPressed: () {
-                saveMeal();
-                showWeightDialog = false;
-                setState(() {});
-                Navigator.of(context).pop();
-              },
-              child: const Text('Save Meal'),
-            ))
-      ],
     );
   }
 }

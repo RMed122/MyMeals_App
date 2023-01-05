@@ -12,7 +12,7 @@ void main() {
     test("Barcode Scanning returns product information", () async {
       dynamic responseData = await MealServices()
           .barcodeScan(manualMode: true, manualBarcode: "8002330009533");
-      expect(responseData['kcal'], greaterThanOrEqualTo(0));
+      expect(responseData['calories'], greaterThanOrEqualTo(0));
       expect(responseData['errorBit'], 1);
     });
     test('Random Recipe Function Request does not generate exception',
@@ -22,8 +22,16 @@ void main() {
     });
 
     test('Random Recipe Function returns an actual meal', () async {
-      dynamic responseData = await MealServices().randomRecipeCheatDay("lunch");
-      expect(responseData['cheatDay']['idMeal'], isNotNull);
+      dynamic responseData = await MealServices().randomRecipeCheatDay("Lunch");
+      expect(responseData['recipeByIngr'][0]['label'], isNotNull);
+      expect(responseData['errorBit'], 1);
+    });
+
+    test('Random Recipe by Cuisine Type Function returns an actual meal',
+        () async {
+      dynamic responseData =
+          await MealServices().randomRecipeCuisineType("American");
+      expect(responseData['recipeByIngr'][0]['label'], isNotNull);
       expect(responseData['errorBit'], 1);
     });
 

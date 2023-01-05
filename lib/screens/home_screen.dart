@@ -45,39 +45,17 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {});
   }
 
-  Future<bool> _onWillPop() async {
-    return (await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Are you sure?'),
-            content: const Text('Do you want to exit the App'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('No'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Yes'),
-              ),
-            ],
-          ),
-        )) ??
-        false;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return //WillPopScope(
-        //onWillPop: _onWillPop,
-        //child:
-        MaterialApp(
+    return MaterialApp(
       title: 'MyMeals',
       themeMode: _themeMode,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.pink)
-            .copyWith(secondary: Colors.amber),
-        canvasColor: const Color.fromRGBO(255, 254, 229, 1),
+        primarySwatch: Colors.green,
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green)
+            .copyWith(secondary: Colors.lightGreen),
+        //canvasColor: const Color.fromRGBO(255, 254, 229, 1),
+        canvasColor: const Color.fromARGB(255, 233, 245, 219),
         fontFamily: 'Raleway',
         textTheme: ThemeData.light().textTheme.copyWith(
             bodyText1: const TextStyle(

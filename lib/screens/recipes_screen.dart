@@ -1,10 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:horizontal_card_pager/card_item.dart';
 import 'package:mymeals/services/data_services.dart';
 import 'package:mymeals/services/meal_services.dart';
 import 'package:vertical_card_pager/vertical_card_pager.dart';
 import 'package:mymeals/screens/recipesearch_results.dart';
+import 'package:horizontal_card_pager/horizontal_card_pager.dart';
 
 class RecipesScreen extends StatefulWidget {
   const RecipesScreen({Key? key}) : super(key: key);
@@ -22,16 +24,20 @@ class _RecipesScreenState extends State<RecipesScreen> {
     "Healthy",
     "Random",
     "Analyzer",
+    "Explore"
   ];
   bool showCasualDialog = false;
   bool showHealthyDialog = false;
   bool showRandomDialog = false;
   bool showAnalyzeDialog = false;
   bool showResultDialog = false;
+  bool showTypeDialog = false;
   bool showSaveAlert = false;
+  String landcapeSliderTitle = "Random";
   String ingredients = "";
   String mealName = "";
   String mealTime = 'Breakfast';
+  String mealType = 'American';
   String calories = "0";
   String dialogMessage = "An error happened";
   dynamic recipeAnalysisResult = {};
@@ -99,6 +105,26 @@ class _RecipesScreenState extends State<RecipesScreen> {
     }
   }
 
+  dynamic randomTypeRecipe() async {
+    dynamic responseData = {};
+    if (mealType != "") {
+      responseData = await inst.randomRecipeCuisineType(mealType);
+    }
+    if (responseData["errorBit"] == 1) {
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => RecipeSearchResultScreen(
+                  searchResults: responseData,
+                )),
+      );
+    } else {
+      showSaveAlert = true;
+      setState(() {});
+    }
+  }
+
   void recipeAnalysis() async {
     dynamic responseData = {};
     if (ingredients != "") {
@@ -138,6 +164,27 @@ class _RecipesScreenState extends State<RecipesScreen> {
     'Dinner',
   ];
 
+  var mealTypeList = [
+    'American',
+    'Asian',
+    'British',
+    'Caribbean',
+    'Central Europe',
+    'Chinese',
+    'Eastern Europe',
+    'French',
+    'Indian',
+    'Italian',
+    'Japanese',
+    'Kosher',
+    'Mediterranean',
+    'Mexican',
+    'Middle Eastern',
+    'Nordic',
+    'South American',
+    'South East Asian',
+  ];
+
   void dialogController(int index) async {
     switch (index) {
       case 0:
@@ -167,6 +214,12 @@ class _RecipesScreenState extends State<RecipesScreen> {
           setState(() {});
         }
         break;
+      case 4:
+        {
+          showTypeDialog = true;
+          setState(() {});
+        }
+        break;
     }
   }
 
@@ -175,8 +228,9 @@ class _RecipesScreenState extends State<RecipesScreen> {
     final List<Widget> images = [
       Stack(fit: StackFit.expand, children: [
         ClipRect(
-          child: Image.network(
-            "https://food.unl.edu/newsletters/images/mise-en-plase.jpg",
+          child: Image.asset(
+            "assets/images/casual.jpg",
+            //Image.network("https://food.unl.edu/newsletters/images/mise-en-plase.jpg",
             fit: BoxFit.cover,
           ),
         ),
@@ -192,8 +246,10 @@ class _RecipesScreenState extends State<RecipesScreen> {
       ]),
       Stack(fit: StackFit.expand, children: [
         ClipRect(
-          child: Image.network(
-            "https://previews.123rf.com/images/fortyforks/fortyforks1603/fortyforks160300029/55827979-healthy-cooking-concept-or-culinary-background.jpg",
+          child: Image.asset(
+            "assets/images/healthy.jpg",
+            //Image.network(
+            // "https://www.eatthis.com/wp-content/uploads/sites/4/2021/05/healthy-foods.jpg?quality=82&strip=1",
             fit: BoxFit.cover,
           ),
         ),
@@ -209,8 +265,10 @@ class _RecipesScreenState extends State<RecipesScreen> {
       ]),
       Stack(fit: StackFit.expand, children: [
         ClipRect(
-          child: Image.network(
-            "https://flexxsirv.sirv.com/b6b3b9e876cd41273b1c1527c96892c5a2d3dfaa2f/Lose_The_Cheat_Day_Mentality.jpg",
+          child: Image.asset(
+            "assets/images/random.jpg",
+            //Image.network(
+            //"https://flexxsirv.sirv.com/b6b3b9e876cd41273b1c1527c96892c5a2d3dfaa2f/Lose_The_Cheat_Day_Mentality.jpg",
             fit: BoxFit.cover,
           ),
         ),
@@ -226,8 +284,10 @@ class _RecipesScreenState extends State<RecipesScreen> {
       ]),
       Stack(fit: StackFit.expand, children: [
         ClipRect(
-          child: Image.network(
-            "https://sciencemeetsfood.org/wp-content/uploads/2018/10/sixreasons-cover.jpg",
+          child: Image.asset(
+            "assets/images/analysis.jpg",
+            //Image.network(
+            //"https://sciencemeetsfood.org/wp-content/uploads/2018/10/sixreasons-cover.jpg",
             fit: BoxFit.cover,
           ),
         ),
@@ -241,18 +301,76 @@ class _RecipesScreenState extends State<RecipesScreen> {
           ),
         ),
       ]),
+      Stack(fit: StackFit.expand, children: [
+        ClipRect(
+          child: Image.asset(
+            "assets/images/explore.jpg",
+            //Image.network(
+            //"https://images.squarespace-cdn.com/content/v1/53b839afe4b07ea978436183/1608506169128-S6KYNEV61LEP5MS1UIH4/traditional-food-around-the-world-Travlinmad.jpg",
+            fit: BoxFit.cover,
+          ),
+        ),
+        ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 0.5, sigmaY: 0.5),
+            child: Container(
+              color: Colors.grey.withOpacity(0.3),
+              alignment: Alignment.center,
+            ),
+          ),
+        ),
+      ])
     ];
     return Stack(children: [
-      VerticalCardPager(
-        initialPage: 1,
-        textStyle:
-            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        titles: titles,
-        images: images,
-        align: ALIGN.CENTER,
-        onSelectedItem: (index) {
-          dialogController(index);
-        },
+      Visibility(
+        visible: MediaQuery.of(context).orientation == Orientation.portrait,
+        child: VerticalCardPager(
+          initialPage: 1,
+          textStyle:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          titles: titles,
+          images: images,
+          align: ALIGN.CENTER,
+          onSelectedItem: (index) {
+            dialogController(index);
+          },
+        ),
+      ),
+      Visibility(
+        visible: MediaQuery.of(context).orientation == Orientation.landscape,
+        child: Center(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                landcapeSliderTitle,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                ),
+              ),
+            ),
+            HorizontalCardPager(
+                onSelectedItem: (page) {
+                  dialogController(page);
+                  landcapeSliderTitle = titles[page];
+                  setState(() {});
+                },
+                onPageChanged: (page) {
+                  landcapeSliderTitle = titles[page.round()];
+                  setState(() {});
+                },
+                initialPage: 2,
+                items: [
+                  ImageCarditem(image: images[0]),
+                  ImageCarditem(image: images[1]),
+                  ImageCarditem(image: images[2]),
+                  ImageCarditem(image: images[3]),
+                  ImageCarditem(image: images[4]),
+                ]),
+          ]),
+        ),
       ),
       Visibility(
           visible: showCasualDialog,
@@ -510,6 +628,46 @@ class _RecipesScreenState extends State<RecipesScreen> {
                 TextButton(
                   onPressed: () {
                     showRandomDialog = false;
+                    setState(() {});
+                  },
+                  child: const Text('Cancel'),
+                )
+              ])),
+      Visibility(
+          visible: showTypeDialog,
+          child: AlertDialog(
+              title: const Text('Random Recipes by Culinary Type'),
+              content: SingleChildScrollView(
+                  child: SizedBox(
+                      child: Column(children: [
+                DropdownButton(
+                  value: mealType,
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  items: mealTypeList.map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(items),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      mealType = newValue!;
+                    });
+                  },
+                ),
+              ]))),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    showTypeDialog = false;
+                    setState(() {});
+                    randomRecipe();
+                  },
+                  child: const Text('Search'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    showTypeDialog = false;
                     setState(() {});
                   },
                   child: const Text('Cancel'),

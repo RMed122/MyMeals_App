@@ -21,6 +21,8 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen>
   late ScrollController _scrollController;
   UserDataServices inst = UserDataServices();
   bool showSaveAlert = false;
+  bool showSaveDialog = false;
+  int portions = 0;
   String dialogMessage = "An error happened";
   String successSave = "  Add meal to daily consumed meals";
 
@@ -36,16 +38,28 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen>
 
   void addMealtoDb() {
     try {
+      double divideBy = 1;
+      if (portions != 0 &&
+          portions < int.parse(widget.data.nutriments[0].size)) {
+        divideBy = portions / int.parse(widget.data.nutriments[0].size);
+      }
       dynamic bitError = inst.addCalories(
           widget.data.title,
-          int.parse(widget.data.calories.replaceAll(RegExp(r'[^0-9]'), '')),
+          (int.parse(widget.data.calories.replaceAll(RegExp(r'[^0-9]'), '')) *
+                  divideBy)
+              .round(),
           widget.data.mealTime,
-          int.parse(
-              widget.data.nutriments[2].size.replaceAll(RegExp(r'[^0-9]'), '')),
-          int.parse(
-              widget.data.nutriments[3].size.replaceAll(RegExp(r'[^0-9]'), '')),
-          int.parse(widget.data.nutriments[1].size
-              .replaceAll(RegExp(r'[^0-9]'), '')));
+          (int.parse(widget.data.nutriments[4].size.replaceAll(RegExp(r'[^0-9]'), '')) *
+                  divideBy)
+              .round(),
+          (int.parse(widget.data.nutriments[5].size
+                      .replaceAll(RegExp(r'[^0-9]'), '')) *
+                  divideBy)
+              .round(),
+          (int.parse(widget.data.nutriments[3].size
+                      .replaceAll(RegExp(r'[^0-9]'), '')) *
+                  divideBy)
+              .round());
       successSave = " Meal Already Added";
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Meal Added Successfully'),
@@ -93,7 +107,60 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen>
         title: Text('Your Recipe'),
         backgroundColor: Colors.transparent,
       ),
-      body: Column(children: [
+      body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Visibility(
+          visible: showSaveDialog,
+          child: Center(
+            child: AlertDialog(
+                title: const Text('Healthy Search'),
+                content: SingleChildScrollView(
+                    child: SizedBox(
+                        //height: 200,
+                        child: Column(children: [
+                  const Divider(
+                    height: 5,
+                  ),
+                  const Divider(
+                    height: 15,
+                  ),
+                  TextField(
+                    onChanged: (value) {
+                      if (value != null) {
+                        portions = int.parse(value);
+                      }
+
+                      setState(() {});
+                    },
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText:
+                          'Number of Portions (Max: ${widget.data.nutriments[0].size})',
+                    ),
+                  ),
+                ]))),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      showSaveDialog = false;
+                      setState(() {});
+                      addMealtoDb();
+                    },
+                    child: const Text('Save Meal'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      showSaveDialog = false;
+                      setState(() {});
+                    },
+                    child: const Text('Cancel'),
+                  )
+                ]),
+          ),
+        ),
         Visibility(
             visible: showSaveAlert,
             child: Container(
@@ -111,7 +178,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen>
                       )
                     ]))),
         Visibility(
-            visible: !showSaveAlert,
+            visible: !showSaveAlert && !showSaveDialog,
             child: Expanded(
                 child: ListView(
               controller: _scrollController,
@@ -217,7 +284,8 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen>
                       ),
                       GestureDetector(
                           onTap: () {
-                            addMealtoDb();
+                            showSaveDialog = true;
+                            setState(() {});
                           },
                           child: Row(children: [
                             const Icon(

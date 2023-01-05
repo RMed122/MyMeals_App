@@ -30,19 +30,16 @@ class MainDrawer extends StatelessWidget {
     return Drawer(
       child: Column(
         children: <Widget>[
-          Container(
-            height: 120,
-            width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            alignment: Alignment.centerLeft,
-            color: Theme.of(context).colorScheme.secondary,
-            child: Text(
-              'My Meals',
-              style: TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 30,
-                  color: Theme.of(context).primaryColor),
-            ),
+          Center(
+            child: Container(
+                height: 200,
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                alignment: Alignment.centerLeft,
+                color: Theme.of(context).colorScheme.secondary,
+                child: const Center(
+                    child:
+                        Image(image: AssetImage('assets/images/appLogo.png')))),
           ),
           const SizedBox(
             height: 20,

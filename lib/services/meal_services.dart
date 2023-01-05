@@ -25,7 +25,7 @@ class MealServices {
 
     final response = await http.get(Uri.parse(
         "https://world.openfoodfacts.org/api/v0/product/$barcodeScanRes.json"));
-    final data = json.decode(response.body);
+    final data = json.decode(utf8.decode(response.bodyBytes));
     if (data["status"] != 1) {
       returnData["errorBit"] = 0;
     } else {
@@ -53,11 +53,11 @@ class MealServices {
     if (calories == "") {
       final response = await http.get(Uri.parse(
           "https://api.edamam.com/api/recipes/v2?type=public&q=$ingredients&mealType=$mealTime&random=true&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
-      data = json.decode(response.body);
+      data = json.decode(utf8.decode(response.bodyBytes));
     } else {
       final response = await http.get(Uri.parse(
           "https://api.edamam.com/api/recipes/v2?type=public&q=$ingredients&mealType=$mealTime&random=true&calories=$rangeCalories&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
-      data = json.decode(response.body);
+      data = json.decode(utf8.decode(response.bodyBytes));
     }
     if (data["to"] < 1) {
       returnData["errorBit"] = 0;
@@ -84,19 +84,6 @@ class MealServices {
     return randInts;
   }
 
-  // dynamic randomRecipeCheatDay() async {
-  //   Map<String, Object> returnData = {"errorBit": 1, "cheatDay": {}};
-  //   try {
-  //     final response = await http
-  //         .get(Uri.parse('https://www.themealdb.com/api/json/v1/1/random.php'));
-  //     final data = json.decode(response.body);
-  //     returnData["cheatDay"] = data["meals"][0];
-  //   } catch (e) {
-  //     returnData["errorBit"] = 0;
-  //   }
-  //   return returnData;
-  // }
-
   dynamic randomRecipeCheatDay(String mealTime) async {
     Map<String, Object> returnData = {"errorBit": 1, "recipeByIngr": []};
     var recipeByIngr = [];
@@ -105,7 +92,31 @@ class MealServices {
 
     final response = await http.get(Uri.parse(
         "https://api.edamam.com/api/recipes/v2?type=public&mealType=$mealTime&calories=$calories&random=true&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
-    data = json.decode(response.body);
+    //  data = json.decode(utf8.decode(response.bodyBytes));
+    data = json.decode(utf8.decode(response.bodyBytes));
+
+    if (data["to"] < 1) {
+      returnData["errorBit"] = 0;
+    } else {
+      List<int> rand =
+          randomizer(data["to"], min(7, int.parse(data["to"].toString())));
+      for (int i in rand) {
+        recipeByIngr.add(data["hits"][i]["recipe"]);
+      }
+      returnData["recipeByIngr"] = recipeByIngr;
+    }
+    return returnData;
+  }
+
+  dynamic randomRecipeCuisineType(String cuisineType) async {
+    Map<String, Object> returnData = {"errorBit": 1, "recipeByIngr": []};
+    var recipeByIngr = [];
+    var data = {};
+    String calories = "0-2500";
+
+    final response = await http.get(Uri.parse(
+        "https://api.edamam.com/api/recipes/v2?type=public&cuisineType=$cuisineType&calories=$calories&random=true&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
+    data = json.decode(utf8.decode(response.bodyBytes));
 
     if (data["to"] < 1) {
       returnData["errorBit"] = 0;
@@ -133,7 +144,7 @@ class MealServices {
           "accept": "application/json",
         },
         body: payload);
-    final data = json.decode(response.body);
+    final data = json.decode(utf8.decode(response.bodyBytes));
     try {
       returnData["analysisResult"] = data["totalNutrients"];
     } catch (e) {

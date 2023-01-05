@@ -1,5 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:horizontal_card_pager/card_item.dart';
+import 'package:horizontal_card_pager/horizontal_card_pager.dart';
 import 'package:mymeals/model/recipe.dart';
 import 'package:mymeals/screens/recipe_details_screen.dart';
 import 'package:mymeals/widget/bottom_navbar.dart';
@@ -21,6 +23,8 @@ class RecipeSearchResultScreen extends StatefulWidget {
 class _RecipeSearchResultScreenState extends State<RecipeSearchResultScreen> {
   List<String> titles = [];
   List<Widget> images = [];
+  List<CardItem> imagesCards = [];
+  String landcapeSliderTitle = "";
 
   @override
   void initState() {
@@ -32,8 +36,7 @@ class _RecipeSearchResultScreenState extends State<RecipeSearchResultScreen> {
     dynamic data = widget.searchResults["recipeByIngr"];
     if (data != null) {
       for (var meal in data) {
-        titles.add(meal["label"]);
-        images.add(Stack(fit: StackFit.expand, children: [
+        Widget imageToAdd = Stack(fit: StackFit.expand, children: [
           ClipRect(
             child: Image.network(
               meal["image"],
@@ -49,8 +52,13 @@ class _RecipeSearchResultScreenState extends State<RecipeSearchResultScreen> {
               ),
             ),
           ),
-        ]));
+        ]);
+        titles.add(meal["label"]);
+        images.add(imageToAdd);
+        imagesCards.add(ImageCarditem(image: imageToAdd));
       }
+      landcapeSliderTitle = titles[2];
+      setState(() {});
     }
   }
 
@@ -111,16 +119,56 @@ class _RecipeSearchResultScreenState extends State<RecipeSearchResultScreen> {
       ),
       drawer: MainDrawer(),
       bottomNavigationBar: BottomNavBar(),
-      body: VerticalCardPager(
-        initialPage: 1,
-        textStyle:
-            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        titles: titles,
-        images: images,
-        align: ALIGN.CENTER,
-        onSelectedItem: (index) {
-          seeRecipeDetails(index);
-        },
+      body: Stack(
+        children: [
+          Visibility(
+            visible: MediaQuery.of(context).orientation == Orientation.portrait,
+            child: VerticalCardPager(
+              initialPage: 1,
+              textStyle: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
+              titles: titles,
+              images: images,
+              align: ALIGN.CENTER,
+              onSelectedItem: (index) {
+                seeRecipeDetails(index);
+              },
+            ),
+          ),
+          Visibility(
+            visible:
+                MediaQuery.of(context).orientation == Orientation.landscape,
+            child: Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        landcapeSliderTitle,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                        ),
+                      ),
+                    ),
+                    HorizontalCardPager(
+                        onSelectedItem: (page) {
+                          seeRecipeDetails(page);
+                          landcapeSliderTitle = titles[page];
+                          setState(() {});
+                        },
+                        onPageChanged: (page) {
+                          landcapeSliderTitle = titles[page.round()];
+                          setState(() {});
+                        },
+                        initialPage: 2,
+                        items: imagesCards),
+                  ]),
+            ),
+          ),
+        ],
       ),
     );
   }
