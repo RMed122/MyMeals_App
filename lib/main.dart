@@ -54,8 +54,8 @@ class MyApp extends StatelessWidget {
                     fontSize: 24, fontFamily: 'RobotoCondensed')),
           ),
           darkTheme: ThemeData(
-            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.pink)
-                .copyWith(secondary: Colors.amber),
+            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green)
+                .copyWith(secondary: Colors.lightGreen),
           ),
           home: redirectTest()),
     );

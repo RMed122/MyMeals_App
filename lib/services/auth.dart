@@ -44,9 +44,7 @@ class Auth {
         idToken: googleSignInAuthentication.idToken,
       );
       await _firebaseAuth.signInWithCredential(credential);
-    } on auth.FirebaseAuthException catch (e) {
-      throw e;
-    }
+    } on auth.FirebaseAuthException catch (e) {}
   }
 
   Future<void> signOutFromGoogle() async {
@@ -57,9 +55,7 @@ class Auth {
   Future<void> logout() async {
     try {
       await _googleSignIn.signOut();
-    } catch (e) {
-      throw e;
-    }
+    } catch (e) {}
 
     return await _firebaseAuth.signOut();
   }

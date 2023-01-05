@@ -123,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         try {
                           await auth.signInwithGoogle();
                           if (!mounted) return;
-                          Navigator.push(
+                          Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => const HomeScreen()));
