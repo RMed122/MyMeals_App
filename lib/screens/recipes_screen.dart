@@ -661,7 +661,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
                   onPressed: () {
                     showTypeDialog = false;
                     setState(() {});
-                    randomRecipe();
+                    randomTypeRecipe();
                   },
                   child: const Text('Search'),
                 ),

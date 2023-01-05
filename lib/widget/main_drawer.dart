@@ -32,7 +32,7 @@ class MainDrawer extends StatelessWidget {
         children: <Widget>[
           Center(
             child: Container(
-                height: 200,
+                height: 270,
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 alignment: Alignment.centerLeft,
