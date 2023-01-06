@@ -49,9 +49,9 @@ class MainDrawer extends StatelessWidget {
             'Home',
             Icons.restaurant,
             () {
-              Navigator.push(
+              Navigator.pushNamed(
                 context,
-                MaterialPageRoute(builder: (context) => DashBoard()),
+                "/",
               );
             },
           ),
