@@ -30,7 +30,7 @@ void main() {
     test('Random Recipe by Cuisine Type Function returns an actual meal',
         () async {
       dynamic responseData =
-          await MealServices().randomRecipeCuisineType("American");
+          await MealServices().randomRecipeCuisineType("American", "Dinner");
       expect(responseData['recipeByIngr'][0]['label'], isNotNull);
       expect(responseData['errorBit'], 1);
     });
