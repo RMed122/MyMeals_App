@@ -108,7 +108,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
   dynamic randomTypeRecipe() async {
     dynamic responseData = {};
     if (mealType != "") {
-      responseData = await inst.randomRecipeCuisineType(mealType);
+      responseData = await inst.randomRecipeCuisineType(mealType, mealTime);
     }
     if (responseData["errorBit"] == 1) {
       // ignore: use_build_context_synchronously
@@ -652,6 +652,21 @@ class _RecipesScreenState extends State<RecipesScreen> {
                   onChanged: (String? newValue) {
                     setState(() {
                       mealType = newValue!;
+                    });
+                  },
+                ),
+                DropdownButton(
+                  value: mealTime,
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  items: mealTimeList.map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(items),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      mealTime = newValue!;
                     });
                   },
                 ),

@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mymeals/widget/daily_counter.dart';
 import 'package:mymeals/widget/dashboard_card.dart';
 import 'package:mymeals/services/data_services.dart';
 import 'package:mymeals/widget/insertproduct_popup.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class DashBoard extends StatefulWidget {
   static const routeName = '/Dashboard-card';
@@ -15,6 +18,7 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   UserDataServices inst = UserDataServices();
   List<Widget> mealList = [];
+  late Widget dailyCounter = const DailyCounter();
 
   @override
   void initState() {
@@ -39,31 +43,48 @@ class _DashBoardState extends State<DashBoard> {
     setState(() {});
   }
 
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  void _onRefresh() {
+    addMealtoList();
+    dailyCounter = DailyCounter(
+      key: UniqueKey(),
+    );
+    setState(() {});
+    _refreshController.refreshCompleted();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         child: const Icon(Icons.add),
         onPressed: () {
           showDialog(
             context: context,
-            builder: (BuildContext context) => InsertProdPopup(),
+            builder: (BuildContext context) => const InsertProdPopup(),
           );
         },
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const DailyCounter(),
-            ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: mealList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return mealList[index];
-                })
-          ],
+      body: SmartRefresher(
+        enablePullDown: true,
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              dailyCounter,
+              ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: mealList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return mealList[index];
+                  })
+            ],
+          ),
         ),
       ),
     );

@@ -108,14 +108,14 @@ class MealServices {
     return returnData;
   }
 
-  dynamic randomRecipeCuisineType(String cuisineType) async {
+  dynamic randomRecipeCuisineType(String cuisineType, String mealTime) async {
     Map<String, Object> returnData = {"errorBit": 1, "recipeByIngr": []};
     var recipeByIngr = [];
     var data = {};
     String calories = "0-2500";
 
     final response = await http.get(Uri.parse(
-        "https://api.edamam.com/api/recipes/v2?type=public&cuisineType=$cuisineType&calories=$calories&random=true&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
+        "https://api.edamam.com/api/recipes/v2?type=public&cuisineType=$cuisineType&mealType=$mealTime&calories=$calories&random=true&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
     data = json.decode(utf8.decode(response.bodyBytes));
 
     if (data["to"] < 1) {

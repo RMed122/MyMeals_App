@@ -28,6 +28,7 @@ class _InsertProdPopupState extends State<InsertProdPopup> {
     "errorBit": 1,
   };
   bool showWeightDialog = false;
+  bool showProdNotFound = false;
   String mealTime = "Breakfast";
   int weight = 0;
 
@@ -58,21 +59,38 @@ class _InsertProdPopupState extends State<InsertProdPopup> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Visibility(
-                visible: !showWeightDialog,
+                visible: showProdNotFound,
+                child: AlertDialog(
+                    title: const Text('Message'),
+                    content: const Text(
+                        "Product Not Found, please use manual insert option."),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          showProdNotFound = false;
+                          setState(() {});
+                        },
+                        child: const Text('OK'),
+                      )
+                    ])),
+            Visibility(
+                visible: !showWeightDialog && !showProdNotFound,
                 child: FloatingActionButton.extended(
                   onPressed: () async {
                     productDetails = await inst.barcodeScan();
                     if (productDetails["errorBit"] == 1) {
                       showWeightDialog = true;
+                    } else {
+                      showProdNotFound = true;
                     }
                     setState(() {});
                   },
                   label: const Text('Use barcode scanner'),
                   icon: const Icon(Icons.camera_alt_outlined),
-                  backgroundColor: Colors.pink,
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
                 )),
             Visibility(
-                visible: !showWeightDialog,
+                visible: !showWeightDialog && !showProdNotFound,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: FloatingActionButton.extended(
@@ -84,7 +102,7 @@ class _InsertProdPopupState extends State<InsertProdPopup> {
                     },
                     label: const Text('Manual Insert'),
                     icon: const Icon(Icons.addchart),
-                    backgroundColor: Colors.pink,
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                 )),
             Visibility(
@@ -92,7 +110,19 @@ class _InsertProdPopupState extends State<InsertProdPopup> {
               child: SingleChildScrollView(
                   child: SizedBox(
                       child: Column(children: [
-                Text("Found product: ${productDetails['brand']}"),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("${productDetails['brand']}"),
+                    const Divider(height: 10),
+                    Text(
+                        "Calories: ${productDetails['calories']} kcal in 100g"),
+                    Text("Fat: ${productDetails['fat']} gr in 100g"),
+                    Text("Carbs: ${productDetails['carbs']} gr in 100g"),
+                    Text("Protein: ${productDetails['protein']} gr in 100g"),
+                  ],
+                ),
+                const Divider(height: 10),
                 TextField(
                   onChanged: (value) {
                     weight = int.parse(value);
@@ -129,7 +159,8 @@ class _InsertProdPopupState extends State<InsertProdPopup> {
         actions: [
           TextButton(
             style: TextButton.styleFrom(
-              foregroundColor: Colors.blue, // foreground
+              foregroundColor:
+                  Theme.of(context).colorScheme.secondary, // foreground
             ),
             onPressed: () {
               Navigator.of(context).pop();
@@ -140,7 +171,8 @@ class _InsertProdPopupState extends State<InsertProdPopup> {
               visible: showWeightDialog,
               child: TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.blue, // foreground
+                  foregroundColor:
+                      Theme.of(context).colorScheme.secondary, // foreground
                 ),
                 onPressed: () {
                   saveMeal();
@@ -149,7 +181,7 @@ class _InsertProdPopupState extends State<InsertProdPopup> {
                   Navigator.of(context).pop();
                 },
                 child: const Text('Save Meal'),
-              ))
+              )),
         ],
       ),
     );
