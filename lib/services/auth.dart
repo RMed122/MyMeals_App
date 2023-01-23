@@ -1,9 +1,25 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:google_sign_in/google_sign_in.dart';
-import '../model/user_model.dart';
+import 'package:mymeals/model/user_model.dart';
 
 class Auth {
-  final auth.FirebaseAuth _firebaseAuth = auth.FirebaseAuth.instance;
+  final bool testMode;
+  final dynamic mockAuth;
+  final dynamic mockGoogleSignIn;
+  late auth.FirebaseAuth _firebaseAuth;
+  late GoogleSignIn _googleSignIn;
+  Auth(
+      {this.testMode = false,
+      this.mockAuth = false,
+      this.mockGoogleSignIn = false}) {
+    if (!testMode) {
+      _firebaseAuth = auth.FirebaseAuth.instance;
+      _googleSignIn = GoogleSignIn();
+    } else {
+      _firebaseAuth = mockAuth;
+      _googleSignIn = mockGoogleSignIn;
+    }
+  }
 
   User? _firebaseUser(auth.User? user) {
     if (user == null) {
@@ -31,9 +47,7 @@ class Auth {
     return _firebaseUser(result.user);
   }
 
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-
-  Future<String?> signInwithGoogle() async {
+  Future<dynamic> signInwithGoogle() async {
     try {
       final GoogleSignInAccount? googleSignInAccount =
           await _googleSignIn.signIn();
@@ -43,13 +57,10 @@ class Auth {
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
       );
-      await _firebaseAuth.signInWithCredential(credential);
-    } on auth.FirebaseAuthException catch (e) {}
-  }
-
-  Future<void> signOutFromGoogle() async {
-    await _googleSignIn.signOut();
-    await _firebaseAuth.signOut();
+      return await _firebaseAuth.signInWithCredential(credential);
+    } on auth.FirebaseAuthException catch (e) {
+      return "Invalid";
+    }
   }
 
   Future<void> logout() async {

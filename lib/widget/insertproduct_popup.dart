@@ -6,17 +6,25 @@ import 'package:mymeals/services/meal_services.dart';
 import 'package:mymeals/widget/insertData.dart';
 
 class InsertProdPopup extends StatefulWidget {
-  const InsertProdPopup({
-    super.key,
-  });
+  const InsertProdPopup({super.key, this.testMode = false});
+  final bool testMode;
 
   @override
-  State<InsertProdPopup> createState() => _InsertProdPopupState();
+  State<InsertProdPopup> createState() => InsertProdPopupState();
 }
 
-class _InsertProdPopupState extends State<InsertProdPopup> {
+class InsertProdPopupState extends State<InsertProdPopup> {
   MealServices inst = MealServices();
-  UserDataServices d_inst = UserDataServices();
+  dynamic d_inst;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.testMode) {
+      d_inst = 0;
+    }
+  }
+
   Map<String, Object> productDetails = {
     "calories": 0,
     "fat": 0,
@@ -39,14 +47,20 @@ class _InsertProdPopupState extends State<InsertProdPopup> {
     'Dinner',
   ];
 
-  void saveMeal() {
+  dynamic saveMeal() {
     int calories =
         (((productDetails["calories"] as int) / 100) * weight).round();
     int fat = (((productDetails["fat"] as int) / 100) * weight).round();
     int carbs = (((productDetails["carbs"] as int) / 100) * weight).round();
     int protein = (((productDetails["protein"] as int) / 100) * weight).round();
-    d_inst.addCalories(productDetails["brand"] as String, calories, mealTime,
-        carbs, protein, fat);
+    if (!widget.testMode) {
+      d_inst = UserDataServices();
+      d_inst.addCalories(productDetails["brand"] as String, calories, mealTime,
+          carbs, protein, fat);
+    } else {
+      d_inst = 0;
+      return 0;
+    }
   }
 
   @override

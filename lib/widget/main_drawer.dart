@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mymeals/screens/dashboard_screen.dart';
 import '../screens/setttings_screen.dart';
 import 'package:mymeals/screens/login_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:mymeals/services/auth.dart';
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer({Key? key}) : super(key: key);
+  const MainDrawer({Key? key, this.testMode = false}) : super(key: key);
+  final bool testMode;
   Widget buildListTile(String title, IconData icon, Function() tapHandler) {
     return ListTile(
       leading: Icon(
@@ -27,7 +27,13 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<Auth>(context);
+    final dynamic auth;
+    if (!testMode) {
+      auth = Provider.of<Auth>(context);
+    } else {
+      auth = 0;
+    }
+
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -61,7 +67,10 @@ class MainDrawer extends StatelessWidget {
             () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingsScreen()),
+                MaterialPageRoute(
+                    builder: (context) => SettingsScreen(
+                          testMode: testMode,
+                        )),
               );
             },
           ),
@@ -69,11 +78,16 @@ class MainDrawer extends StatelessWidget {
             'Sign Out',
             Icons.logout,
             () async {
-              await auth.logout();
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  (route) => false);
+              if (!testMode) {
+                await auth.logout();
+
+                // ignore: use_build_context_synchronously
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()),
+                    (route) => false);
+              }
             },
           ),
         ],

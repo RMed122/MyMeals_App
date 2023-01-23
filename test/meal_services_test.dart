@@ -27,12 +27,25 @@ void main() {
       expect(responseData['errorBit'], 1);
     });
 
+    test('Random Recipe Function does not an actual meal', () async {
+      dynamic responseData = await MealServices().randomRecipeCheatDay("TEST");
+      expect(responseData['errorBit'], 0);
+    });
+
     test('Random Recipe by Cuisine Type Function returns an actual meal',
         () async {
       dynamic responseData =
           await MealServices().randomRecipeCuisineType("American", "Dinner");
       expect(responseData['recipeByIngr'][0]['label'], isNotNull);
       expect(responseData['errorBit'], 1);
+    });
+
+    test(
+        'Random Recipe by Cuisine Type Function does not returns an actual meal',
+        () async {
+      dynamic responseData =
+          await MealServices().randomRecipeCuisineType("TEST", "TEST");
+      expect(responseData['errorBit'], 0);
     });
 
     test('Meals by Ingredients Function handles bad ingredients', () async {
@@ -44,6 +57,14 @@ void main() {
     test('Meals by Ingredients Function returns an actual meal', () async {
       dynamic responseData =
           await MealServices().mealsByIngredients("chicken", "dinner");
+      expect(responseData['recipeByIngr'][0]['label'], isNotNull);
+      expect(responseData['errorBit'], 1);
+    });
+
+    test('Meals by Ingredients and calories Function returns an actual meal',
+        () async {
+      dynamic responseData = await MealServices()
+          .mealsByIngredients("chicken", "dinner", calories: "1000");
       expect(responseData['recipeByIngr'][0]['label'], isNotNull);
       expect(responseData['errorBit'], 1);
     });

@@ -9,18 +9,20 @@ import 'package:mymeals/widget/main_drawer.dart';
 import 'package:vertical_card_pager/vertical_card_pager.dart';
 
 class RecipeSearchResultScreen extends StatefulWidget {
-  const RecipeSearchResultScreen({super.key, required this.searchResults});
+  const RecipeSearchResultScreen(
+      {super.key, required this.searchResults, this.testMode = false});
   final Map<String, Object> searchResults;
+  final bool testMode;
 
   @override
-  _RecipeSearchResultScreenState createState() =>
-      _RecipeSearchResultScreenState();
+  RecipeSearchResultScreenState createState() =>
+      RecipeSearchResultScreenState();
 
-  static _RecipeSearchResultScreenState of(BuildContext context) =>
-      context.findAncestorStateOfType<_RecipeSearchResultScreenState>()!;
+  static RecipeSearchResultScreenState of(BuildContext context) =>
+      context.findAncestorStateOfType<RecipeSearchResultScreenState>()!;
 }
 
-class _RecipeSearchResultScreenState extends State<RecipeSearchResultScreen> {
+class RecipeSearchResultScreenState extends State<RecipeSearchResultScreen> {
   List<String> titles = [];
   List<Widget> images = [];
   List<CardItem> imagesCards = [];
@@ -32,17 +34,28 @@ class _RecipeSearchResultScreenState extends State<RecipeSearchResultScreen> {
     initRecipeCards();
   }
 
+  dynamic testImagehandler(dynamic meal) {
+    if (!widget.testMode) {
+      return Image.network(
+        meal["image"],
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Image.asset("assets/images/casual.jpg");
+    }
+  }
+
   void initRecipeCards() {
     dynamic data = widget.searchResults["recipeByIngr"];
     if (data != null) {
       for (var meal in data) {
         Widget imageToAdd = Stack(fit: StackFit.expand, children: [
-          ClipRect(
-            child: Image.network(
-              meal["image"],
-              fit: BoxFit.cover,
-            ),
-          ),
+          ClipRect(child: testImagehandler(meal)
+              // Image.network(
+              //   meal["image"],
+              //   fit: BoxFit.cover,
+              // ),
+              ),
           ClipRRect(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 0.35, sigmaY: 0.35),
@@ -62,7 +75,7 @@ class _RecipeSearchResultScreenState extends State<RecipeSearchResultScreen> {
     }
   }
 
-  void seeRecipeDetails(int index) {
+  dynamic seeRecipeDetails(int index) {
     dynamic data = {};
     data = widget.searchResults["recipeByIngr"];
     data = data[index];
@@ -103,6 +116,10 @@ class _RecipeSearchResultScreenState extends State<RecipeSearchResultScreen> {
       nutriments: Ingridient.toList(nutriments),
     );
 
+    if (widget.testMode) {
+      return recipeToShow;
+    }
+
     //ignore: use_build_context_synchronously
     Navigator.push(
       context,
@@ -117,8 +134,12 @@ class _RecipeSearchResultScreenState extends State<RecipeSearchResultScreen> {
       appBar: AppBar(
         title: Text('Search Results'),
       ),
-      drawer: MainDrawer(),
-      bottomNavigationBar: BottomNavBar(),
+      drawer: MainDrawer(
+        testMode: widget.testMode,
+      ),
+      bottomNavigationBar: BottomNavBar(
+        testMode: widget.testMode,
+      ),
       body: Stack(
         children: [
           Visibility(

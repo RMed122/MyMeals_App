@@ -1,33 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:mymeals/screens/data_screen.dart';
 import 'package:mymeals/services/data_services.dart';
-import 'dashboard_screen.dart';
-import 'setttings_screen.dart';
-import 'recipes_screen.dart';
-import 'tabs_screen.dart';
+import 'package:mymeals/screens/dashboard_screen.dart';
+import 'package:mymeals/screens/setttings_screen.dart';
+import 'package:mymeals/screens/recipes_screen.dart';
+import 'package:mymeals/screens/tabs_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key, this.testMode = false}) : super(key: key);
+  final bool testMode;
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 
-  static _HomeScreenState of(BuildContext context) =>
-      context.findAncestorStateOfType<_HomeScreenState>()!;
+  static HomeScreenState of(BuildContext context) =>
+      context.findAncestorStateOfType<HomeScreenState>()!;
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  ThemeMode _themeMode = ThemeMode.system;
+class HomeScreenState extends State<HomeScreen> {
+  ThemeMode themeMode = ThemeMode.system;
   @override
   void initState() {
     super.initState();
-    UserDataServices inst = UserDataServices();
-    inst.firstLoginSetUp();
+
+    if (!widget.testMode) {
+      UserDataServices inst = UserDataServices();
+      inst.firstLoginSetUp();
+    }
+
     setThemeMode();
   }
 
-  void setThemeMode() async {
+  dynamic setThemeMode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     late String theme;
     try {
@@ -36,20 +41,23 @@ class _HomeScreenState extends State<HomeScreen> {
       theme = "system";
     }
     if (theme == "system") {
-      _themeMode = ThemeMode.system;
+      themeMode = ThemeMode.system;
     } else if (theme == "dark") {
-      _themeMode = ThemeMode.dark;
+      themeMode = ThemeMode.dark;
     } else {
-      _themeMode = ThemeMode.light;
+      themeMode = ThemeMode.light;
     }
     setState(() {});
+    if (widget.testMode) {
+      return theme;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'MyMeals',
-      themeMode: _themeMode,
+      themeMode: themeMode,
       theme: ThemeData(
         primarySwatch: Colors.green,
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green)
@@ -68,28 +76,40 @@ class _HomeScreenState extends State<HomeScreen> {
                 const TextStyle(fontSize: 24, fontFamily: 'RobotoCondensed')),
       ),
       darkTheme: ThemeData(brightness: Brightness.dark),
+      // coverage:ignore-start
       routes: {
-        '/': (ctx) => TabsScreen(),
-        SettingsScreen.routeName: (ctx) => SettingsScreen(),
-        DashBoard.routeName: (ctx) => DashBoard(),
-        DataScreen.routeName: (ctx) => DataScreen()
+        '/': (ctx) => TabsScreen(
+              testMode: widget.testMode,
+            ),
+        SettingsScreen.routeName: (ctx) => SettingsScreen(
+              testMode: widget.testMode,
+            ),
+        DashBoard.routeName: (ctx) => DashBoard(
+              testMode: widget.testMode,
+            ),
+        DataScreen.routeName: (ctx) => DataScreen(
+              testMode: widget.testMode,
+            )
       },
       onGenerateRoute: (settings) {
         return MaterialPageRoute(
-          builder: (ctx) => RecipesScreen(),
+          builder: (ctx) => RecipesScreen(
+            testMode: widget.testMode,
+          ),
         );
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(
-            builder: (ctx) =>
-                RecipesScreen()); //prevents crashing if it doesnt find any rputes it goes to homescreen
+            builder: (ctx) => RecipesScreen(
+                  testMode: widget.testMode,
+                ));
       },
-    ); //);
+    ); // coverage:ignore-end
   }
 
-  void changeTheme(ThemeMode themeMode) {
+  dynamic changeTheme(ThemeMode themeMode) {
     setState(() {
-      _themeMode = themeMode;
+      themeMode = themeMode;
     });
   }
 }

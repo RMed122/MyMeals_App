@@ -7,26 +7,24 @@ import 'package:mymeals/screens/home_screen.dart';
 import 'package:mymeals/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const MyApp());
-}
-
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key, this.testMode = false}) : super(key: key);
+  final bool testMode;
 
   dynamic redirectTest() {
-    if (FirebaseAuth.instance.currentUser != null) {
-      return const HomeScreen();
+    if (!testMode) {
+      if (FirebaseAuth.instance.currentUser != null) {
+        return const HomeScreen();
+      } else {
+        return const LoginScreen();
+      }
     } else {
-      return const LoginScreen();
+      return HomeScreen(
+        testMode: testMode,
+      );
     }
   }
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -61,3 +59,12 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+// coverage:ignore-start
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
+} // coverage:ignore-end

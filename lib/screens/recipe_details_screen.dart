@@ -9,22 +9,27 @@ import 'package:flutter/services.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   final Recipe data;
-  RecipeDetailScreen({required this.data});
+  final bool testMode;
+  final dynamic mockFirestore;
+  RecipeDetailScreen(
+      {required this.data, this.testMode = false, this.mockFirestore = false});
 
   @override
-  _RecipeDetailScreenState createState() => _RecipeDetailScreenState();
+  RecipeDetailScreenState createState() => RecipeDetailScreenState();
 }
 
-class _RecipeDetailScreenState extends State<RecipeDetailScreen>
+class RecipeDetailScreenState extends State<RecipeDetailScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
   late ScrollController _scrollController;
-  UserDataServices inst = UserDataServices();
+  //UserDataServices inst = UserDataServices();
+  dynamic inst;
   bool showSaveAlert = false;
   bool showSaveDialog = false;
   int portions = 0;
   String dialogMessage = "An error happened";
   String successSave = "  Add meal to daily consumed meals";
+  late ImageProvider<Object> recipeImage;
 
   @override
   void initState() {
@@ -34,9 +39,22 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen>
     _scrollController.addListener(() {
       changeAppBarColor(_scrollController);
     });
+
+    if (!widget.testMode) {
+      recipeImage = NetworkImage(widget.data.photo);
+    } else {
+      recipeImage = const AssetImage("assets/images/casual.jpg");
+    }
   }
 
-  void addMealtoDb() {
+  dynamic addMealtoDb() {
+    if (!widget.testMode) {
+      inst = UserDataServices();
+    } else {
+      inst = UserDataServices(
+          testMode: widget.testMode, mockFirestore: widget.mockFirestore);
+    }
+
     try {
       double divideBy = 1;
       if (portions != 0 &&
@@ -88,7 +106,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen>
     }
   }
 
-  // fab to write review
   showFAB(TabController tabController) {
     int reviewTabIndex = 2;
     if (tabController.index == reviewTabIndex) {
@@ -100,8 +117,12 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MainDrawer(),
-      bottomNavigationBar: BottomNavBar(),
+      drawer: MainDrawer(
+        testMode: widget.testMode,
+      ),
+      bottomNavigationBar: BottomNavBar(
+        testMode: widget.testMode,
+      ),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text('Your Recipe'),
@@ -192,8 +213,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen>
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: NetworkImage(widget.data.photo),
-                          fit: BoxFit.cover)),
+                          image: recipeImage, fit: BoxFit.cover)),
                   child: Container(
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -253,6 +273,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen>
                         ),
                       ),
                       // Recipe Description
+
                       GestureDetector(
                           onTap: () {
                             launchUrl(Uri.parse(widget.data.description
@@ -282,6 +303,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen>
                       const Divider(
                         height: 10,
                       ),
+
                       GestureDetector(
                           onTap: () {
                             showSaveDialog = true;

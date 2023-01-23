@@ -1,34 +1,75 @@
 import 'package:mymeals/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'home_screen.dart';
-import '../services/auth.dart';
+import 'package:mymeals/services/auth.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen(
+      {Key? key,
+      this.testMode = false,
+      this.mockAuth = false,
+      this.mockGoogleSignIn = false})
+      : super(key: key);
+  final bool testMode;
+  final dynamic mockAuth;
+  final dynamic mockGoogleSignIn;
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginScreen> createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
+class LoginScreenState extends State<LoginScreen> {
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
+  dynamic auth;
   @override
   void dispose() {
-    _emailController.dispose();
+    emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
+  dynamic signin() async {
+    try {
+      await auth
+          .handleSignInEmail(emailController.text, _passwordController.text)
+          .then((value) {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()));
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Error while logging in, please try again'),
+      ));
+    }
+  }
+
+  dynamic googleSignIn() async {
+    try {
+      await auth.signInwithGoogle();
+      if (!mounted) return;
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Error in Google SignIn'),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<Auth>(context);
+    if (!widget.testMode) {
+      auth = Provider.of<Auth>(context);
+    } else {
+      auth = Auth(
+          testMode: widget.testMode,
+          mockAuth: widget.mockAuth,
+          mockGoogleSignIn: widget.mockGoogleSignIn);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -51,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                      controller: _emailController,
+                      controller: emailController,
                       decoration:
                           const InputDecoration(labelText: 'Enter your email'),
                       keyboardType: TextInputType.emailAddress,
@@ -82,24 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   ElevatedButton(
                       onPressed: () async {
-                        try {
-                          final isValid = _formKey.currentState!.validate();
-                          await auth
-                              .handleSignInEmail(_emailController.text,
-                                  _passwordController.text)
-                              .then((value) {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const HomeScreen()));
-                          });
-                        } catch (e) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text(
-                                'Error while logging in, please try again'),
-                          ));
-                        }
+                        signin();
                       },
                       child: const Text('Login')),
                   TextButton(
@@ -120,19 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Colors.white,
                       ),
                       onPressed: () async {
-                        try {
-                          await auth.signInwithGoogle();
-                          if (!mounted) return;
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomeScreen()));
-                        } catch (e) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text('Error in Google SignIn'),
-                          ));
-                        }
+                        googleSignIn();
                       },
                       label: const Text(
                         "Sign-in with Google",

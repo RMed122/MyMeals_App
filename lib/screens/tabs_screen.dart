@@ -1,30 +1,46 @@
 import 'package:flutter/material.dart';
-import './dashboard_screen.dart';
-import '../widget/main_drawer.dart';
-import 'data_screen.dart';
-import 'recipes_screen.dart';
+import 'package:mymeals/screens/dashboard_screen.dart';
+import 'package:mymeals/widget/main_drawer.dart';
+import 'package:mymeals/screens/data_screen.dart';
+import 'package:mymeals/screens/recipes_screen.dart';
 
 class TabsScreen extends StatefulWidget {
+  final bool testMode;
+  TabsScreen({this.testMode = false});
+
   @override
-  _TabsScreenState createState() => _TabsScreenState();
+  TabsScreenState createState() => TabsScreenState();
 }
 
-class _TabsScreenState extends State<TabsScreen> {
-  final List<Map<String, Object>> _pages = [
-    //here to add new tabs, the styling must be updated in the list line 44
-    {
-      'page': DashBoard(),
-      'title': 'Dashboard',
-    },
-    {
-      'page': RecipesScreen(),
-      'title': 'Recipes',
-    },
-    {
-      'page': DataScreen(),
-      'title': 'Your Data & Trends',
-    },
-  ];
+class TabsScreenState extends State<TabsScreen> {
+  List<Map<String, Object>> _pages = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pages = [
+      {
+        'page': DashBoard(
+          testMode: widget.testMode,
+        ),
+        'title': 'Dashboard',
+      },
+      {
+        'page': RecipesScreen(
+          testMode: widget.testMode,
+        ),
+        'title': 'Recipes',
+      },
+      {
+        'page': DataScreen(
+          testMode: widget.testMode,
+        ),
+        'title': 'Your Data & Trends',
+      },
+    ];
+  }
+
   int _selectedPageIndex = 0;
 
   void _selectPage(int index) {
@@ -39,7 +55,9 @@ class _TabsScreenState extends State<TabsScreen> {
       appBar: AppBar(
         title: Text(_pages[_selectedPageIndex]['title'].toString()),
       ),
-      drawer: const MainDrawer(),
+      drawer: MainDrawer(
+        testMode: widget.testMode,
+      ),
       body: _pages[_selectedPageIndex]['page'] as Widget,
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,

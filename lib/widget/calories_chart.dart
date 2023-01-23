@@ -4,26 +4,37 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 
 class CaloriesChart extends StatefulWidget {
   const CaloriesChart(
-      {super.key, required this.weekly, required this.nutriDoc});
+      {super.key,
+      required this.weekly,
+      required this.nutriDoc,
+      this.testMode = false});
   final bool weekly; //True for weekly/False for monthly
   final String nutriDoc; // [calories, carbs , fat, protein]
+  final bool testMode;
 
   @override
   State<CaloriesChart> createState() => _CaloriesChartState();
 }
 
 class _CaloriesChartState extends State<CaloriesChart> {
-  UserDataServices inst = UserDataServices();
+  dynamic inst;
   dynamic chartData = [ChartData()];
 
   @override
   void initState() {
     super.initState();
-    updateChart();
+    if (!widget.testMode) {
+      inst = UserDataServices();
+      updateChart();
+    } else {
+      inst = 0;
+    }
   }
 
   void updateChart() async {
-    chartData = await inst.plotCaloriesGraph(widget.weekly, widget.nutriDoc);
+    if (!widget.testMode) {
+      chartData = await inst.plotCaloriesGraph(widget.weekly, widget.nutriDoc);
+    }
     setState(() {});
   }
 

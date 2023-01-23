@@ -9,16 +9,20 @@ import 'package:mymeals/screens/recipesearch_results.dart';
 import 'package:horizontal_card_pager/horizontal_card_pager.dart';
 
 class RecipesScreen extends StatefulWidget {
-  const RecipesScreen({Key? key}) : super(key: key);
+  const RecipesScreen(
+      {Key? key, this.testMode = false, this.mockFirestore = false})
+      : super(key: key);
+  final bool testMode;
+  final dynamic mockFirestore;
 
   @override
-  _RecipesScreenState createState() => _RecipesScreenState();
+  RecipesScreenState createState() => RecipesScreenState();
 
-  static _RecipesScreenState of(BuildContext context) =>
-      context.findAncestorStateOfType<_RecipesScreenState>()!;
+  static RecipesScreenState of(BuildContext context) =>
+      context.findAncestorStateOfType<RecipesScreenState>()!;
 }
 
-class _RecipesScreenState extends State<RecipesScreen> {
+class RecipesScreenState extends State<RecipesScreen> {
   final List<String> titles = [
     "Casual",
     "Healthy",
@@ -42,9 +46,10 @@ class _RecipesScreenState extends State<RecipesScreen> {
   String dialogMessage = "An error happened";
   dynamic recipeAnalysisResult = {};
   MealServices inst = MealServices();
-  UserDataServices dataInst = UserDataServices();
+  //UserDataServices dataInst = UserDataServices();
+  dynamic dataInst;
 
-  void searchbyIngr() async {
+  dynamic searchbyIngr() async {
     dynamic responseData = {};
     if (ingredients != "") {
       responseData = await inst.mealsByIngredients(ingredients, mealTime);
@@ -56,15 +61,19 @@ class _RecipesScreenState extends State<RecipesScreen> {
         MaterialPageRoute(
             builder: (context) => RecipeSearchResultScreen(
                   searchResults: responseData,
+                  testMode: widget.testMode,
                 )),
       );
     } else {
       showSaveAlert = true;
       setState(() {});
     }
+    if (widget.testMode && mealName == "" && mealTime == "Breakfast") {
+      return 0;
+    }
   }
 
-  void searchHealthy() async {
+  dynamic searchHealthy() async {
     dynamic responseData = {};
     if (ingredients != "") {
       responseData = await inst.mealsByIngredients(ingredients, mealTime,
@@ -77,15 +86,22 @@ class _RecipesScreenState extends State<RecipesScreen> {
         MaterialPageRoute(
             builder: (context) => RecipeSearchResultScreen(
                   searchResults: responseData,
+                  testMode: widget.testMode,
                 )),
       );
     } else {
       showSaveAlert = true;
       setState(() {});
     }
+    if (widget.testMode && calories == "1000" && mealTime == "Dinner") {
+      return 0;
+    }
   }
 
   dynamic randomRecipe() async {
+    if (widget.testMode && mealTime == "Snack") {
+      return 0;
+    }
     dynamic responseData = {};
     if (mealTime != "") {
       responseData = await inst.randomRecipeCheatDay(mealTime);
@@ -97,6 +113,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
         MaterialPageRoute(
             builder: (context) => RecipeSearchResultScreen(
                   searchResults: responseData,
+                  testMode: widget.testMode,
                 )),
       );
     } else {
@@ -106,6 +123,9 @@ class _RecipesScreenState extends State<RecipesScreen> {
   }
 
   dynamic randomTypeRecipe() async {
+    if (widget.testMode && mealTime == "Snack" && mealType == "Italian") {
+      return 0;
+    }
     dynamic responseData = {};
     if (mealType != "") {
       responseData = await inst.randomRecipeCuisineType(mealType, mealTime);
@@ -117,6 +137,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
         MaterialPageRoute(
             builder: (context) => RecipeSearchResultScreen(
                   searchResults: responseData,
+                  testMode: widget.testMode,
                 )),
       );
     } else {
@@ -125,7 +146,11 @@ class _RecipesScreenState extends State<RecipesScreen> {
     }
   }
 
-  void recipeAnalysis() async {
+  dynamic recipeAnalysis() async {
+    if (widget.testMode) {
+      showResultDialog = true;
+      return 0;
+    }
     dynamic responseData = {};
     if (ingredients != "") {
       responseData = await inst.recipeAnalysis(ingredients);
@@ -147,7 +172,14 @@ class _RecipesScreenState extends State<RecipesScreen> {
     }
   }
 
-  void saveAnalysisResult() {
+  dynamic saveAnalysisResult() async {
+    if (!widget.testMode) {
+      dataInst = UserDataServices();
+    } else {
+      dataInst = UserDataServices(
+          testMode: widget.testMode, mockFirestore: widget.mockFirestore);
+    }
+
     dataInst.addCalories(
         mealName,
         recipeAnalysisResult['kcal'],
@@ -155,6 +187,10 @@ class _RecipesScreenState extends State<RecipesScreen> {
         recipeAnalysisResult['carbs'],
         recipeAnalysisResult['protein'],
         recipeAnalysisResult['fat']);
+
+    if (widget.testMode) {
+      return await dataInst.getDailyMeals();
+    }
   }
 
   var mealTimeList = [

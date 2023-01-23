@@ -1,9 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:mymeals/services/data_services.dart';
-import 'package:mymeals/services/meal_services.dart';
-import 'package:mymeals/widget/insertData.dart';
 
 class DashBoardCard extends StatefulWidget {
   const DashBoardCard({
@@ -25,8 +22,6 @@ class DashBoardCard extends StatefulWidget {
 }
 
 class _DashBoardCardState extends State<DashBoardCard> {
-  UserDataServices inst = UserDataServices();
-
   @override
   Widget build(BuildContext context) {
     return InkWell(

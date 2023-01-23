@@ -10,12 +10,16 @@ import 'package:settings_ui/settings_ui.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const routeName = '/settings';
-  const SettingsScreen({super.key});
+  const SettingsScreen(
+      {super.key, this.testMode = false, this.mockFirestore = false});
+  final bool testMode;
+  final dynamic mockFirestore;
+
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  State<SettingsScreen> createState() => SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class SettingsScreenState extends State<SettingsScreen> {
   bool showThemeMenu = false;
   bool showSaveAlert = false;
   bool showCaloriesMenu = false;
@@ -34,15 +38,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {});
   }
 
-  void setTheme(String themeSelected) async {
+  dynamic setTheme(String themeSelected) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     showThemeMenu = !showThemeMenu;
     prefs.setString("theme", themeSelected);
     setState(() {});
+    if (widget.testMode) {
+      return prefs;
+    }
   }
 
   void saveTargetCalories() {
-    UserDataServices inst = UserDataServices();
+    UserDataServices inst;
+    if (!widget.testMode) {
+      inst = UserDataServices();
+    } else {
+      inst = UserDataServices(
+          testMode: widget.testMode, mockFirestore: widget.mockFirestore);
+    }
     try {
       if (targetCalories != "") {
         inst.setTargetCalories(int.parse(targetCalories));
@@ -71,8 +84,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         appBar: AppBar(
           title: Text('Settings'),
         ),
-        drawer: MainDrawer(),
-        bottomNavigationBar: BottomNavBar(),
+        drawer: MainDrawer(
+          testMode: widget.testMode,
+        ),
+        bottomNavigationBar: BottomNavBar(
+          testMode: widget.testMode,
+        ),
         body: Stack(
           children: [
             GestureDetector(

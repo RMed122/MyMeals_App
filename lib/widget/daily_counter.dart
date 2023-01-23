@@ -3,26 +3,35 @@ import 'package:mymeals/services/data_services.dart';
 
 class DailyCounter extends StatefulWidget {
   static const routeName = '/dailyCounter';
-  const DailyCounter({super.key});
+  const DailyCounter({super.key, this.testmode = false});
+  final bool testmode;
 
   @override
   State<DailyCounter> createState() => _DailyCounterState();
 }
 
 class _DailyCounterState extends State<DailyCounter> {
-  UserDataServices inst = UserDataServices();
+  late dynamic inst;
   int targetCal = 0;
   int calories = 0;
 
   @override
   void initState() {
     super.initState();
-    setCounterData();
+    if (!widget.testmode) {
+      inst = UserDataServices();
+      setCounterData();
+    } else {
+      inst = 0;
+    }
   }
 
   void setCounterData() async {
-    targetCal = await inst.getTargetCalories();
-    calories = await inst.getDayWeekmonthNutri("calories");
+    if (!widget.testmode) {
+      targetCal = await inst.getTargetCalories();
+      calories = await inst.getDayWeekmonthNutri("calories");
+    }
+
     setState(() {});
   }
 

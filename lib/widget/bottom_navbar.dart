@@ -5,12 +5,14 @@ import 'package:mymeals/screens/data_screen.dart';
 import 'package:mymeals/screens/recipes_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
+  final bool testMode;
+  BottomNavBar({this.testMode = false});
   @override
-  _BottomNavBarState createState() => _BottomNavBarState();
+  BottomNavBarState createState() => BottomNavBarState();
 }
 
-class _BottomNavBarState extends State<BottomNavBar> {
-  final List<Map<String, Object>> _pages = [
+class BottomNavBarState extends State<BottomNavBar> {
+  final List<Map<String, Object>> pages = [
     //here to add new tabs, the styling must be updated in the list line 44
     {
       'page': const DashBoard(),
@@ -25,12 +27,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
       'title': 'Your Data & Trends',
     },
   ];
-  int _selectedPageIndex = 0;
+  int selectedPageIndex = 0;
 
-  void _selectPage(int index) {
+  void selectPage(int index) {
     setState(() {
-      _selectedPageIndex = index;
-      print(index);
+      selectedPageIndex = index;
     });
 
     Navigator.push(
@@ -38,16 +39,18 @@ class _BottomNavBarState extends State<BottomNavBar> {
       MaterialPageRoute(
           builder: (context) => Scaffold(
                 appBar: AppBar(
-                  title: Text(_pages[_selectedPageIndex]['title'].toString()),
+                  title: Text(pages[selectedPageIndex]['title'].toString()),
                 ),
-                drawer: const MainDrawer(),
-                body: _pages[_selectedPageIndex]['page'] as Widget,
+                drawer: MainDrawer(
+                  testMode: widget.testMode,
+                ),
+                body: pages[selectedPageIndex]['page'] as Widget,
                 bottomNavigationBar: BottomNavigationBar(
-                  onTap: _selectPage,
+                  onTap: selectPage,
                   backgroundColor: Theme.of(context).primaryColor,
                   unselectedItemColor: Colors.white,
                   selectedItemColor: Colors.white,
-                  currentIndex: _selectedPageIndex,
+                  currentIndex: selectedPageIndex,
                   type: BottomNavigationBarType.fixed,
                   items: [
                     BottomNavigationBarItem(
@@ -74,11 +77,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      onTap: _selectPage,
+      onTap: selectPage,
       backgroundColor: Theme.of(context).primaryColor,
       unselectedItemColor: Colors.white,
       selectedItemColor: Colors.white,
-      currentIndex: _selectedPageIndex,
+      currentIndex: selectedPageIndex,
       type: BottomNavigationBarType.fixed,
       items: [
         BottomNavigationBarItem(

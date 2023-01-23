@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -10,9 +9,18 @@ class ChartData {
 }
 
 class UserDataServices {
-  final fireStore = FirebaseFirestore.instance;
+  UserDataServices({this.mockFirestore = false, this.testMode = false}) {
+    if (!testMode) {
+      fireStore = FirebaseFirestore.instance;
+    } else {
+      fireStore = mockFirestore;
+    }
+  }
+  late FirebaseFirestore fireStore;
+  final dynamic mockFirestore;
+  final bool testMode;
 
-  void firstLoginSetUp() async {
+  dynamic firstLoginSetUp() async {
     final data =
         fireStore.collection('users').where("id", isEqualTo: getUserEmail());
     try {
@@ -21,10 +29,23 @@ class UserDataServices {
       });
     } catch (e) {
       fireStore.collection('users').add({"id": getUserEmail()});
+      if (testMode) {
+        late String test;
+        final dataVal = fireStore
+            .collection('users')
+            .where("id", isEqualTo: getUserEmail());
+        await dataVal.get().then((value) {
+          test = value.docs.first.get("id");
+        });
+        return test;
+      }
     }
   }
 
   String? getUserEmail() {
+    if (testMode) {
+      return "test@test.com";
+    }
     User? loggedInUser = FirebaseAuth.instance.currentUser;
     String? userEmail;
     if (loggedInUser != null) {
@@ -62,7 +83,7 @@ class UserDataServices {
     }
   }
 
-  void setTargetCalories(int targetCalories) async {
+  dynamic setTargetCalories(int targetCalories) async {
     String userDoc = await getUserDoc();
     fireStore
         .collection('users')

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mymeals/services/data_services.dart';
 
 class DataTile extends StatefulWidget {
   const DataTile(
@@ -16,9 +15,6 @@ class DataTile extends StatefulWidget {
 }
 
 class _DataTileState extends State<DataTile> {
-  UserDataServices inst = UserDataServices();
-  dynamic chartData = [ChartData()];
-
   @override
   void initState() {
     super.initState();

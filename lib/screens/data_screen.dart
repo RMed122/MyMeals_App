@@ -6,14 +6,16 @@ import 'package:mymeals/widget/data_tile.dart';
 class DataScreen extends StatefulWidget {
   static const routeName = '/datascreen';
 
-  const DataScreen({super.key});
+  const DataScreen({super.key, this.testMode = false});
+  final bool testMode;
 
   @override
   State<DataScreen> createState() => _DataScreenState();
 }
 
 class _DataScreenState extends State<DataScreen> {
-  UserDataServices inst = UserDataServices();
+  //UserDataServices inst = UserDataServices();
+  dynamic inst;
   dynamic chartData = [ChartData()];
   dynamic trendData = {
     'daily': [0, 0, 0, 0],
@@ -24,7 +26,11 @@ class _DataScreenState extends State<DataScreen> {
   @override
   void initState() {
     super.initState();
-    getNutriData();
+    if (!widget.testMode) {
+      inst = UserDataServices();
+      getNutriData();
+    }
+
     setState(() {});
   }
 
@@ -203,10 +209,26 @@ class _DataScreenState extends State<DataScreen> {
           ),
         ),
       ),
-      const CaloriesChart(weekly: true, nutriDoc: "calories"),
-      const CaloriesChart(weekly: true, nutriDoc: "carbs"),
-      const CaloriesChart(weekly: true, nutriDoc: "fat"),
-      const CaloriesChart(weekly: true, nutriDoc: "protein"),
+      CaloriesChart(
+        weekly: true,
+        nutriDoc: "calories",
+        testMode: widget.testMode,
+      ),
+      CaloriesChart(
+        weekly: true,
+        nutriDoc: "carbs",
+        testMode: widget.testMode,
+      ),
+      CaloriesChart(
+        weekly: true,
+        nutriDoc: "fat",
+        testMode: widget.testMode,
+      ),
+      CaloriesChart(
+        weekly: true,
+        nutriDoc: "protein",
+        testMode: widget.testMode,
+      ),
       const Padding(
         padding: EdgeInsets.only(left: 20, bottom: 10),
         child: Text(
@@ -217,10 +239,26 @@ class _DataScreenState extends State<DataScreen> {
           ),
         ),
       ),
-      const CaloriesChart(weekly: false, nutriDoc: "calories"),
-      const CaloriesChart(weekly: false, nutriDoc: "carbs"),
-      const CaloriesChart(weekly: false, nutriDoc: "fat"),
-      const CaloriesChart(weekly: false, nutriDoc: "protein"),
+      CaloriesChart(
+        weekly: false,
+        nutriDoc: "calories",
+        testMode: widget.testMode,
+      ),
+      CaloriesChart(
+        weekly: false,
+        nutriDoc: "carbs",
+        testMode: widget.testMode,
+      ),
+      CaloriesChart(
+        weekly: false,
+        nutriDoc: "fat",
+        testMode: widget.testMode,
+      ),
+      CaloriesChart(
+        weekly: false,
+        nutriDoc: "protein",
+        testMode: widget.testMode,
+      ),
     ]));
   }
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mymeals/services/data_services.dart';
-import 'package:mymeals/widget/dashboard_card.dart';
-import '../screens/dashboard_screen.dart';
 
 class InsertData extends StatefulWidget {
+  final bool testMode;
+  const InsertData({super.key, this.testMode = false});
+
   @override
   State<InsertData> createState() => _InsertDataState();
 }
@@ -22,7 +23,17 @@ class _InsertDataState extends State<InsertData> {
   TextEditingController fats = TextEditingController();
   TextEditingController proteins = TextEditingController();
 
-  UserDataServices inst = UserDataServices();
+  dynamic inst;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.testMode) {
+      inst = UserDataServices();
+    } else {
+      inst = 0;
+    }
+  }
 
   var mealTimeList = [
     'Breakfast',
@@ -182,7 +193,7 @@ class _InsertDataState extends State<InsertData> {
           TextButton(
             child: Text('Submit'),
             onPressed: () {
-              if (_carbs.currentState!.validate()) {
+              if (_carbs.currentState!.validate() && !widget.testMode) {
                 inst.addCalories(
                     mealName.text,
                     int.parse(calories.text),
@@ -190,20 +201,8 @@ class _InsertDataState extends State<InsertData> {
                     int.parse(carbs.text),
                     int.parse(proteins.text),
                     int.parse(fats.text));
-                // Add code to handle the input data here
+
                 Navigator.of(context).pop();
-                /*Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => DashBoard_Card(
-                          calories: calories.text,
-                        ),
-                    settings: RouteSettings(
-                      arguments: [
-                        calories.text,
-                        carbs.text,
-                        fats.text,
-                        proteins.text
-                      ],
-                    )));*/
               }
             },
           ),
@@ -212,21 +211,3 @@ class _InsertDataState extends State<InsertData> {
     );
   }
 }
-
-/*
-DropdownButton(
-                  value: mealTime,
-                  icon: const Icon(Icons.keyboard_arrow_down),
-                  items: mealTimeList.map((String items) {
-                    return DropdownMenuItem(
-                      value: items,
-                      child: Text(items),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      mealTime = newValue!;
-                    });
-                  },
-                ),
-*/

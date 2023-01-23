@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:mymeals/widget/daily_counter.dart';
 import 'package:mymeals/widget/dashboard_card.dart';
@@ -9,26 +7,44 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class DashBoard extends StatefulWidget {
   static const routeName = '/Dashboard-card';
-  const DashBoard({super.key});
+  const DashBoard(
+      {super.key, this.testMode = false, this.mockFirestore = false});
+  final bool testMode;
+  final dynamic mockFirestore;
 
   @override
-  State<DashBoard> createState() => _DashBoardState();
+  State<DashBoard> createState() => DashBoardState();
 }
 
-class _DashBoardState extends State<DashBoard> {
-  UserDataServices inst = UserDataServices();
+class DashBoardState extends State<DashBoard> {
+  dynamic inst;
   List<Widget> mealList = [];
-  late Widget dailyCounter = const DailyCounter();
+  late Widget dailyCounter = DailyCounter(
+    testmode: widget.testMode,
+  );
 
   @override
   void initState() {
     super.initState();
-    addMealtoList();
+
+    if (!widget.testMode) {
+      inst = UserDataServices();
+      addMealtoList();
+    } else if (widget.mockFirestore != false) {
+      inst = UserDataServices(
+          testMode: widget.testMode, mockFirestore: widget.mockFirestore);
+    }
   }
 
-  void addMealtoList() async {
+  dynamic addMealtoList() async {
     mealList = [];
-    dynamic meals = await inst.getDailyMeals();
+    dynamic meals;
+    if (widget.testMode && widget.mockFirestore == false) {
+      meals = [0];
+    } else {
+      meals = await inst.getDailyMeals();
+    }
+
     if (meals[0] != 0) {
       for (var meal in meals) {
         mealList.add(DashBoardCard(
@@ -40,16 +56,29 @@ class _DashBoardState extends State<DashBoard> {
       }
     }
 
+    if (widget.testMode) {
+      mealList.add(const DashBoardCard(
+          mealname: "name",
+          calories: "calories",
+          protein: "protein",
+          carbs: "carbs",
+          fat: "fat"));
+    }
+
     setState(() {});
   }
 
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  void _onRefresh() {
-    addMealtoList();
+  void onRefresh() {
+    if (!widget.testMode) {
+      addMealtoList();
+    }
+
     dailyCounter = DailyCounter(
       key: UniqueKey(),
+      testmode: widget.testMode,
     );
     setState(() {});
     _refreshController.refreshCompleted();
@@ -64,14 +93,16 @@ class _DashBoardState extends State<DashBoard> {
         onPressed: () {
           showDialog(
             context: context,
-            builder: (BuildContext context) => const InsertProdPopup(),
+            builder: (BuildContext context) => InsertProdPopup(
+              testMode: widget.testMode,
+            ),
           );
         },
       ),
       body: SmartRefresher(
         enablePullDown: true,
         controller: _refreshController,
-        onRefresh: _onRefresh,
+        onRefresh: onRefresh,
         child: SingleChildScrollView(
           child: Column(
             children: [
