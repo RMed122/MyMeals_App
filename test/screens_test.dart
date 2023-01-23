@@ -680,6 +680,76 @@ void main() {
       expect(prefs.get("theme"), "dark");
     });
 
+    testWidgets('Settings Screen changes main theme to light', (tester) async {
+      SharedPreferences.setMockInitialValues({"theme": "dark"});
+      await tester.pumpWidget(const MaterialApp(
+          home: SettingsScreen(
+        testMode: true,
+      )));
+
+      final SettingsScreenState myWidgetState =
+          tester.state(find.byType(SettingsScreen));
+      SharedPreferences prefs = await myWidgetState.setMainThemeLight();
+      expect(prefs.get("theme"), "light");
+    });
+
+    testWidgets('Settings Screen changes main theme to dark', (tester) async {
+      SharedPreferences.setMockInitialValues({"theme": "system"});
+      await tester.pumpWidget(const MaterialApp(
+          home: SettingsScreen(
+        testMode: true,
+      )));
+
+      final SettingsScreenState myWidgetState =
+          tester.state(find.byType(SettingsScreen));
+      SharedPreferences prefs = await myWidgetState.setMainThemeDark();
+      expect(prefs.get("theme"), "dark");
+    });
+
+    testWidgets('Settings Screen changes main theme to System', (tester) async {
+      SharedPreferences.setMockInitialValues({"theme": "dark"});
+      await tester.pumpWidget(const MaterialApp(
+          home: SettingsScreen(
+        testMode: true,
+      )));
+
+      final SettingsScreenState myWidgetState =
+          tester.state(find.byType(SettingsScreen));
+      SharedPreferences prefs = await myWidgetState.setMainThemeSystem();
+      expect(prefs.get("theme"), "system");
+    });
+
+    testWidgets('Show notification message', (tester) async {
+      SharedPreferences.setMockInitialValues({"theme": "dark"});
+      await tester.pumpWidget(const MaterialApp(
+          home: SettingsScreen(
+        testMode: true,
+      )));
+
+      final SettingsScreenState myWidgetState =
+          tester.state(find.byType(SettingsScreen));
+      await myWidgetState.alertActions();
+
+      expect(myWidgetState.showSaveAlert, false);
+      expect(myWidgetState.showCaloriesMenu, false);
+    });
+
+    testWidgets('unfocus and call save functions', (tester) async {
+      final mockFirestore = FakeFirebaseFirestore();
+      UserDataServices inst =
+          UserDataServices(testMode: true, mockFirestore: mockFirestore);
+      await inst.firstLoginSetUp();
+
+      await tester.pumpWidget(MaterialApp(
+          home: SettingsScreen(
+        testMode: true,
+        mockFirestore: mockFirestore,
+      )));
+      final SettingsScreenState myWidgetState =
+          tester.state(find.byType(SettingsScreen));
+      await myWidgetState.callSaveTarget();
+    });
+
     testWidgets('Bottom Drawer Screen renders correctly', (tester) async {
       await tester.pumpWidget(MaterialApp(
           home: TabsScreen(

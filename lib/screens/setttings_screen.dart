@@ -78,6 +78,29 @@ class SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  dynamic setMainThemeLight() {
+    return setTheme("light");
+  }
+
+  dynamic setMainThemeDark() {
+    return setTheme("dark");
+  }
+
+  dynamic setMainThemeSystem() {
+    return setTheme("system");
+  }
+
+  dynamic alertActions() {
+    showSaveAlert = false;
+    showCaloriesMenu = false;
+    setState(() {});
+  }
+
+  dynamic callSaveTarget() {
+    saveTargetCalories();
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,21 +156,21 @@ class SettingsScreenState extends State<SettingsScreen> {
                               const Text("Please Select an Option: "),
                               ElevatedButton(
                                   onPressed: (() {
-                                    setTheme("system");
+                                    setMainThemeSystem();
                                     HomeScreen.of(context)
                                         .changeTheme(ThemeMode.system);
                                   }),
                                   child: const Text("System Theme")),
                               ElevatedButton(
                                   onPressed: (() {
-                                    setTheme("dark");
+                                    setMainThemeDark();
                                     HomeScreen.of(context)
                                         .changeTheme(ThemeMode.dark);
                                   }),
                                   child: const Text("Dark Theme")),
                               ElevatedButton(
                                   onPressed: (() {
-                                    setTheme("light");
+                                    setMainThemeLight();
                                     HomeScreen.of(context)
                                         .changeTheme(ThemeMode.light);
                                   }),
@@ -179,9 +202,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                                 labelText: 'Enter target daily calories',
                                 suffixIcon: IconButton(
                                     onPressed: () {
-                                      saveTargetCalories();
-                                      FocusManager.instance.primaryFocus
-                                          ?.unfocus();
+                                      callSaveTarget();
                                     },
                                     icon: const Icon(Icons.save)),
                               ),
@@ -199,9 +220,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                     actions: <Widget>[
                       TextButton(
                         onPressed: () {
-                          showSaveAlert = false;
-                          showCaloriesMenu = false;
-                          setState(() {});
+                          alertActions();
                         },
                         child: const Text('OK'),
                       )

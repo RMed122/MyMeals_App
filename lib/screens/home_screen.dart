@@ -107,9 +107,9 @@ class HomeScreenState extends State<HomeScreen> {
     ); // coverage:ignore-end
   }
 
-  dynamic changeTheme(ThemeMode themeMode) {
+  dynamic changeTheme(ThemeMode themeModeSettings) {
     setState(() {
-      themeMode = themeMode;
+      themeMode = themeModeSettings;
     });
   }
 }
