@@ -4,6 +4,20 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import "dart:math";
 
 class MealServices {
+  //DEV
+  final String _devRecipesAppID = "8a90a41c";
+  final String _devRecipesKey = "cb7c02f76fb6df5035c927e3f2b3cbaa";
+
+  final String _devNutriAppID = "96a68843";
+  final String _devNutriKey = "ec285d3bedaa2b44b827740d126f3dd8";
+
+  // //Demo
+  // final String _devRecipesAppID = "d4ab6f06";
+  // final String _devRecipesKey = "ca16ef74cd404265cad30e26a192b5aa";
+
+  //   final String _devNutriAppID = "03e8c8b8";
+  // final String _devNutriKey = "a8483822bd410870f53ef35648d49dee";
+
   dynamic barcodeScan({manualMode = false, manualBarcode = ""}) async {
     Map<String, Object> returnData = {
       "calories": 0,
@@ -52,11 +66,11 @@ class MealServices {
     String rangeCalories = "0-$calories";
     if (calories == "") {
       final response = await http.get(Uri.parse(
-          "https://api.edamam.com/api/recipes/v2?type=public&q=$ingredients&mealType=$mealTime&random=true&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
+          "https://api.edamam.com/api/recipes/v2?type=public&q=$ingredients&mealType=$mealTime&random=true&app_id=$_devRecipesAppID&app_key=$_devRecipesKey"));
       data = json.decode(utf8.decode(response.bodyBytes));
     } else {
       final response = await http.get(Uri.parse(
-          "https://api.edamam.com/api/recipes/v2?type=public&q=$ingredients&mealType=$mealTime&random=true&calories=$rangeCalories&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
+          "https://api.edamam.com/api/recipes/v2?type=public&q=$ingredients&mealType=$mealTime&random=true&calories=$rangeCalories&app_id=$_devRecipesAppID&app_key=$_devRecipesKey"));
       data = json.decode(utf8.decode(response.bodyBytes));
     }
     if (data["to"] < 1) {
@@ -91,7 +105,7 @@ class MealServices {
     String calories = "400-1700";
 
     final response = await http.get(Uri.parse(
-        "https://api.edamam.com/api/recipes/v2?type=public&mealType=$mealTime&calories=$calories&random=true&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
+        "https://api.edamam.com/api/recipes/v2?type=public&mealType=$mealTime&calories=$calories&random=true&app_id=$_devRecipesAppID&app_key=$_devRecipesKey"));
     //  data = json.decode(utf8.decode(response.bodyBytes));
     data = json.decode(utf8.decode(response.bodyBytes));
 
@@ -115,7 +129,7 @@ class MealServices {
     String calories = "0-2500";
 
     final response = await http.get(Uri.parse(
-        "https://api.edamam.com/api/recipes/v2?type=public&cuisineType=$cuisineType&mealType=$mealTime&calories=$calories&random=true&app_id=8a90a41c&app_key=cb7c02f76fb6df5035c927e3f2b3cbaa"));
+        "https://api.edamam.com/api/recipes/v2?type=public&cuisineType=$cuisineType&mealType=$mealTime&calories=$calories&random=true&app_id=$_devRecipesAppID&app_key=$_devRecipesKey"));
     data = json.decode(utf8.decode(response.bodyBytes));
 
     if (data["to"] < 1) {
@@ -138,7 +152,7 @@ class MealServices {
 
     final response = await http.post(
         Uri.parse(
-            "https://api.edamam.com/api/nutrition-details?app_id=96a68843&app_key=ec285d3bedaa2b44b827740d126f3dd8"),
+            "https://api.edamam.com/api/nutrition-details?app_id=$_devNutriAppID&app_key=$_devNutriKey"),
         headers: {
           "content-type": "application/json",
           "accept": "application/json",
