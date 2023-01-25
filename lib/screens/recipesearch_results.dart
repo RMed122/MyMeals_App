@@ -145,7 +145,7 @@ class RecipeSearchResultScreenState extends State<RecipeSearchResultScreen> {
           Visibility(
             visible: MediaQuery.of(context).orientation == Orientation.portrait,
             child: VerticalCardPager(
-              initialPage: 1,
+              initialPage: 2,
               textStyle: const TextStyle(
                   color: Colors.white, fontWeight: FontWeight.bold),
               titles: titles,

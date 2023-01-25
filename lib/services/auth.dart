@@ -1,17 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mymeals/model/user_model.dart';
+import 'package:mymeals/services/data_services.dart';
 
 class Auth {
   final bool testMode;
   final dynamic mockAuth;
   final dynamic mockGoogleSignIn;
+  final dynamic mockFirestore;
   late auth.FirebaseAuth _firebaseAuth;
   late GoogleSignIn _googleSignIn;
   Auth(
       {this.testMode = false,
       this.mockAuth = false,
-      this.mockGoogleSignIn = false}) {
+      this.mockGoogleSignIn = false,
+      this.mockFirestore = false}) {
     if (!testMode) {
       _firebaseAuth = auth.FirebaseAuth.instance;
       _googleSignIn = GoogleSignIn();
@@ -36,6 +39,8 @@ class Auth {
   Future<User?> handleSignInEmail(String email, String password) async {
     final result = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
+    await UserDataServices(testMode: testMode, mockFirestore: mockFirestore)
+        .firstLoginSetUp();
 
     return _firebaseUser(result.user);
   }
@@ -43,6 +48,8 @@ class Auth {
   Future<User?> handleSignUp(String email, String password) async {
     final result = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
+    await UserDataServices(testMode: testMode, mockFirestore: mockFirestore)
+        .firstLoginSetUp();
 
     return _firebaseUser(result.user);
   }
@@ -57,7 +64,11 @@ class Auth {
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
       );
-      return await _firebaseAuth.signInWithCredential(credential);
+      dynamic userGoogleSignIn =
+          await _firebaseAuth.signInWithCredential(credential);
+      await UserDataServices(testMode: testMode, mockFirestore: mockFirestore)
+          .firstLoginSetUp();
+      return userGoogleSignIn;
     } on auth.FirebaseAuthException catch (e) {
       return "Invalid";
     }
@@ -66,8 +77,10 @@ class Auth {
   Future<void> logout() async {
     try {
       await _googleSignIn.signOut();
-    } catch (e) {}
-
-    return await _firebaseAuth.signOut();
+      return await _firebaseAuth.signOut();
+    } catch (e) {
+      return await _firebaseAuth.signOut();
+    }
+    //return await _firebaseAuth.signOut();
   }
 }

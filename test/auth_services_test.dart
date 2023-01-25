@@ -3,6 +3,7 @@ import 'package:mymeals/services/auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 import 'package:mymeals/model/user_model.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 
 void main() {
   group('Auth Services', () {
@@ -13,10 +14,14 @@ void main() {
         email: 'test@test.com',
         displayName: 'Doe',
       );
+      final mockFirestore = FakeFirebaseFirestore();
       final googleSignIn = MockGoogleSignIn();
       final auth = MockFirebaseAuth(mockUser: user);
-      Auth authInst =
-          Auth(testMode: true, mockAuth: auth, mockGoogleSignIn: googleSignIn);
+      Auth authInst = Auth(
+          testMode: true,
+          mockAuth: auth,
+          mockGoogleSignIn: googleSignIn,
+          mockFirestore: mockFirestore);
       User? signedUser =
           await authInst.handleSignInEmail('bob@somedomain.com', "password");
       expect(signedUser!.email, "test@test.com");
@@ -25,8 +30,12 @@ void main() {
     test("Signup with email and password", () async {
       final auth = MockFirebaseAuth();
       final googleSignIn = MockGoogleSignIn();
-      Auth authInst =
-          Auth(testMode: true, mockAuth: auth, mockGoogleSignIn: googleSignIn);
+      final mockFirestore = FakeFirebaseFirestore();
+      Auth authInst = Auth(
+          testMode: true,
+          mockAuth: auth,
+          mockGoogleSignIn: googleSignIn,
+          mockFirestore: mockFirestore);
       User? signedUser = await authInst.handleSignUp("test@test.it", "pass");
       expect(signedUser!.email, "test@test.it");
     });
@@ -40,8 +49,12 @@ void main() {
       );
       final googleSignIn = MockGoogleSignIn();
       final auth = MockFirebaseAuth(mockUser: user);
-      Auth authInst =
-          Auth(testMode: true, mockAuth: auth, mockGoogleSignIn: googleSignIn);
+      final mockFirestore = FakeFirebaseFirestore();
+      Auth authInst = Auth(
+          testMode: true,
+          mockAuth: auth,
+          mockGoogleSignIn: googleSignIn,
+          mockFirestore: mockFirestore);
       dynamic signedUser = await authInst.signInwithGoogle();
       expect(signedUser.user.email, "test@test.com");
     });
@@ -55,8 +68,12 @@ void main() {
       );
       final googleSignIn = MockGoogleSignIn();
       final auth = MockFirebaseAuth(mockUser: user);
-      Auth authInst =
-          Auth(testMode: true, mockAuth: auth, mockGoogleSignIn: googleSignIn);
+      final mockFirestore = FakeFirebaseFirestore();
+      Auth authInst = Auth(
+          testMode: true,
+          mockAuth: auth,
+          mockGoogleSignIn: googleSignIn,
+          mockFirestore: mockFirestore);
       await authInst.signInwithGoogle();
       dynamic signedUser = authInst.user;
       expect(signedUser, isNotNull);
@@ -71,8 +88,12 @@ void main() {
       );
       final googleSignIn = MockGoogleSignIn();
       final auth = MockFirebaseAuth(mockUser: user);
-      Auth authInst =
-          Auth(testMode: true, mockAuth: auth, mockGoogleSignIn: googleSignIn);
+      final mockFirestore = FakeFirebaseFirestore();
+      Auth authInst = Auth(
+          testMode: true,
+          mockAuth: auth,
+          mockGoogleSignIn: googleSignIn,
+          mockFirestore: mockFirestore);
       await authInst.signInwithGoogle();
       await authInst.logout();
     });

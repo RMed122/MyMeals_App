@@ -60,49 +60,61 @@ class RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         title: const Text('Register'),
       ),
-      body: Form(
-        key: _formKey,
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
-                    labelText: 'Enter your email'),
-                keyboardType: TextInputType.emailAddress,
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Email is required';
-                  }
-                  return null;
-                },
-                controller: emailController,
+            const Padding(
+              padding: EdgeInsets.all(20),
+              child: Center(
+                  child: Image(image: AssetImage('assets/images/appLogo.png'))),
+            ),
+            Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: 'Enter your email'),
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email is required';
+                        }
+                        return null;
+                      },
+                      controller: emailController,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      obscureText: true,
+                      controller: _passwordController,
+                      decoration: const InputDecoration(
+                          labelText: 'Enter your password'),
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password is required';
+                        } else if (value.length < 6) {
+                          return 'Password should be at least 6 characters';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                      onPressed: () async {
+                        register();
+                      },
+                      child: const Text('Register'))
+                ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                obscureText: true,
-                controller: _passwordController,
-                decoration:
-                    const InputDecoration(labelText: 'Enter your password'),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Password is required';
-                  } else if (value.length < 6) {
-                    return 'Password should be at least 6 characters';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            ElevatedButton(
-                onPressed: () async {
-                  register();
-                },
-                child: const Text('Register'))
           ],
         ),
       ),

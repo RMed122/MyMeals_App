@@ -361,7 +361,7 @@ class RecipesScreenState extends State<RecipesScreen> {
       Visibility(
         visible: MediaQuery.of(context).orientation == Orientation.portrait,
         child: VerticalCardPager(
-          initialPage: 1,
+          initialPage: 2,
           textStyle:
               const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           titles: titles,
@@ -607,10 +607,10 @@ class RecipesScreenState extends State<RecipesScreen> {
               title: const Text('Analysis Result'),
               content: SingleChildScrollView(
                   child: Column(children: [
-                Text("Energy: ${recipeAnalysisResult["kcal"]}"),
-                Text("Fat: ${recipeAnalysisResult["fat"]}"),
-                Text("Carbs: ${recipeAnalysisResult["carbs"]}"),
-                Text("Protein: ${recipeAnalysisResult["protein"]}"),
+                Text("Energy: ${recipeAnalysisResult["kcal"]} Kcal"),
+                Text("Fat: ${recipeAnalysisResult["fat"]} g"),
+                Text("Carbs: ${recipeAnalysisResult["carbs"]} g"),
+                Text("Protein: ${recipeAnalysisResult["protein"]} g"),
               ])),
               actions: <Widget>[
                 TextButton(

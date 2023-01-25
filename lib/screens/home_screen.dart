@@ -23,12 +23,6 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
-    if (!widget.testMode) {
-      UserDataServices inst = UserDataServices();
-      inst.firstLoginSetUp();
-    }
-
     setThemeMode();
   }
 
