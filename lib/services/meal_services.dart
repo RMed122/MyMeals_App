@@ -15,7 +15,7 @@ class MealServices {
   // final String _devRecipesAppID = "d4ab6f06";
   // final String _devRecipesKey = "ca16ef74cd404265cad30e26a192b5aa";
 
-  //   final String _devNutriAppID = "03e8c8b8";
+  // final String _devNutriAppID = "03e8c8b8";
   // final String _devNutriKey = "a8483822bd410870f53ef35648d49dee";
 
   dynamic barcodeScan({manualMode = false, manualBarcode = ""}) async {

@@ -2,7 +2,7 @@ import 'package:mymeals/services/meal_services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('Meal Services', () {
+  group('Meal Services Tests: ', () {
     test("Barcode Scanning handles not found product", () async {
       dynamic responseData = await MealServices()
           .barcodeScan(manualMode: true, manualBarcode: "FALSE BARCODE");

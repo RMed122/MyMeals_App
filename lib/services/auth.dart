@@ -74,6 +74,12 @@ class Auth {
     }
   }
 
+  Future<void> resetPassword(String email) async {
+    try {
+      return await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } catch (_) {}
+  }
+
   Future<void> logout() async {
     try {
       await _googleSignIn.signOut();
@@ -81,6 +87,5 @@ class Auth {
     } catch (e) {
       return await _firebaseAuth.signOut();
     }
-    //return await _firebaseAuth.signOut();
   }
 }

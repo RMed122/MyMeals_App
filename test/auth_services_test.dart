@@ -6,7 +6,7 @@ import 'package:mymeals/model/user_model.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 
 void main() {
-  group('Auth Services', () {
+  group('Auth Services: ', () {
     test("Auth with email and password", () async {
       final user = MockUser(
         isAnonymous: false,
@@ -38,6 +38,18 @@ void main() {
           mockFirestore: mockFirestore);
       User? signedUser = await authInst.handleSignUp("test@test.it", "pass");
       expect(signedUser!.email, "test@test.it");
+    });
+
+    test("Reset user password", () async {
+      final auth = MockFirebaseAuth();
+      final googleSignIn = MockGoogleSignIn();
+      final mockFirestore = FakeFirebaseFirestore();
+      Auth authInst = Auth(
+          testMode: true,
+          mockAuth: auth,
+          mockGoogleSignIn: googleSignIn,
+          mockFirestore: mockFirestore);
+      await authInst.resetPassword("abc@abc.com");
     });
 
     test("Auth with Google Sign In", () async {

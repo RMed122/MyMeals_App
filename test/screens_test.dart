@@ -13,6 +13,7 @@ import 'package:mymeals/screens/recipe_details_screen.dart';
 import 'package:mymeals/screens/recipes_screen.dart';
 import 'package:mymeals/screens/recipesearch_results.dart';
 import 'package:mymeals/screens/register_screen.dart';
+import 'package:mymeals/screens/resetpass_screen.dart';
 import 'package:mymeals/screens/setttings_screen.dart';
 import 'package:mymeals/screens/tabs_screen.dart';
 import 'package:mymeals/services/data_services.dart';
@@ -22,7 +23,7 @@ import 'package:mockito/mockito.dart';
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 void main() {
-  group('Screen Tests', () {
+  group('Screen Tests: ', () {
     testWidgets('MyApp Screen renders correctly', (tester) async {
       await tester.pumpWidget(const MyApp(
         testMode: true,
@@ -177,6 +178,54 @@ void main() {
       await myWidgetState.signin();
 
       expect(auth.currentUser!.email, 'test@test.com');
+    });
+
+    testWidgets('LoginScreen validate email', (tester) async {
+      final user = MockUser(
+        isAnonymous: false,
+        uid: '001',
+        email: 'test@test.com',
+        displayName: 'Doe',
+      );
+      final googleSignIn = MockGoogleSignIn();
+      final auth = MockFirebaseAuth(mockUser: user);
+      await tester.pumpWidget(MaterialApp(
+          home: LoginScreen(
+        testMode: true,
+        mockAuth: auth,
+        mockGoogleSignIn: googleSignIn,
+      )));
+
+      final LoginScreenState myWidgetState =
+          tester.state(find.byType(LoginScreen));
+
+      expect(myWidgetState.emailValidator("abc@abc.com"), null);
+      expect(myWidgetState.emailValidator(""), "Email is required");
+    });
+
+    testWidgets('LoginScreen validate password', (tester) async {
+      final user = MockUser(
+        isAnonymous: false,
+        uid: '001',
+        email: 'test@test.com',
+        displayName: 'Doe',
+      );
+      final googleSignIn = MockGoogleSignIn();
+      final auth = MockFirebaseAuth(mockUser: user);
+      await tester.pumpWidget(MaterialApp(
+          home: LoginScreen(
+        testMode: true,
+        mockAuth: auth,
+        mockGoogleSignIn: googleSignIn,
+      )));
+
+      final LoginScreenState myWidgetState =
+          tester.state(find.byType(LoginScreen));
+
+      expect(myWidgetState.passwordValidator(""), "Password is required");
+      expect(myWidgetState.passwordValidator("12345"),
+          "Password should be at least 6 characters");
+      expect(myWidgetState.passwordValidator("12345678910"), null);
     });
 
     testWidgets('LoginScreen Google Loggs in correctly', (tester) async {
@@ -613,6 +662,40 @@ void main() {
       expect(auth.currentUser!.email, myWidgetState.emailController.text);
     });
 
+    testWidgets('Register Screen validates email', (tester) async {
+      final googleSignIn = MockGoogleSignIn();
+      final auth = MockFirebaseAuth();
+      await tester.pumpWidget(MaterialApp(
+          home: RegisterScreen(
+        testMode: true,
+        mockAuth: auth,
+        mockGoogleSignIn: googleSignIn,
+      )));
+
+      final RegisterScreenState myWidgetState =
+          tester.state(find.byType(RegisterScreen));
+      expect(myWidgetState.emailValidator("abc@abc.com"), null);
+      expect(myWidgetState.emailValidator(""), "Email is required");
+    });
+
+    testWidgets('Register Screen validates password', (tester) async {
+      final googleSignIn = MockGoogleSignIn();
+      final auth = MockFirebaseAuth();
+      await tester.pumpWidget(MaterialApp(
+          home: RegisterScreen(
+        testMode: true,
+        mockAuth: auth,
+        mockGoogleSignIn: googleSignIn,
+      )));
+
+      final RegisterScreenState myWidgetState =
+          tester.state(find.byType(RegisterScreen));
+      expect(myWidgetState.passwordValidator(""), "Password is required");
+      expect(myWidgetState.passwordValidator("12345"),
+          "Password should be at least 6 characters");
+      expect(myWidgetState.passwordValidator("12345678910"), null);
+    });
+
     testWidgets('Settings Screen renders correctly', (tester) async {
       await tester.pumpWidget(const MaterialApp(
           home: SettingsScreen(
@@ -755,6 +838,77 @@ void main() {
           home: TabsScreen(
         testMode: true,
       )));
+    });
+
+    testWidgets('Reset Password Screen renders correctly', (tester) async {
+      final auth = MockFirebaseAuth();
+      final googleSignIn = MockGoogleSignIn();
+      await tester.pumpWidget(MaterialApp(
+          home: ResetPassScreen(
+        testMode: true,
+        mockAuth: auth,
+        mockGoogleSignIn: googleSignIn,
+      )));
+      final ResetPassScreenState myWidgetState =
+          tester.state(find.byType(ResetPassScreen));
+
+      expect(myWidgetState.emailSent, false);
+      expect(myWidgetState.resetButtonText, "Reset");
+    });
+
+    testWidgets('Reset Password Screen sends resets email', (tester) async {
+      final auth = MockFirebaseAuth();
+      final googleSignIn = MockGoogleSignIn();
+      await tester.pumpWidget(MaterialApp(
+          home: ResetPassScreen(
+        testMode: true,
+        mockAuth: auth,
+        mockGoogleSignIn: googleSignIn,
+      )));
+      final ResetPassScreenState myWidgetState =
+          tester.state(find.byType(ResetPassScreen));
+
+      myWidgetState.emailController.text = "abc@abc.com";
+      await myWidgetState.sendResetCode();
+
+      expect(myWidgetState.emailSent, true);
+      expect(myWidgetState.resetButtonText, "Back to Login");
+    });
+
+    testWidgets('Reset Password Screen Reset button behaves correctly',
+        (tester) async {
+      final auth = MockFirebaseAuth();
+      final googleSignIn = MockGoogleSignIn();
+      await tester.pumpWidget(MaterialApp(
+          home: ResetPassScreen(
+        testMode: true,
+        mockAuth: auth,
+        mockGoogleSignIn: googleSignIn,
+      )));
+      final ResetPassScreenState myWidgetState =
+          tester.state(find.byType(ResetPassScreen));
+
+      myWidgetState.emailController.text = "abc@abc.com";
+      await myWidgetState.buttonController();
+      expect(myWidgetState.emailSent, true);
+      expect(myWidgetState.resetButtonText, "Back to Login");
+      expect(await myWidgetState.buttonController() == LoginScreen, true);
+    });
+
+    testWidgets('Reset Password Screen email validates emails', (tester) async {
+      final auth = MockFirebaseAuth();
+      final googleSignIn = MockGoogleSignIn();
+      await tester.pumpWidget(MaterialApp(
+          home: ResetPassScreen(
+        testMode: true,
+        mockAuth: auth,
+        mockGoogleSignIn: googleSignIn,
+      )));
+      final ResetPassScreenState myWidgetState =
+          tester.state(find.byType(ResetPassScreen));
+
+      expect(myWidgetState.emailValidator("abc@abc.com"), null);
+      expect(myWidgetState.emailValidator(""), "Email is required");
     });
   });
 }

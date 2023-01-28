@@ -325,7 +325,7 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen>
                     ],
                   ),
                 ),
-                // Tabbar ( Ingridients, nutriments )
+                // Tabbar ( Ingredients, nutriments )
                 Container(
                   height: 60,
                   width: MediaQuery.of(context).size.width,
@@ -339,12 +339,12 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen>
                     },
                     labelColor: Colors.black,
                     unselectedLabelColor: Colors.black.withOpacity(0.6),
-                    labelStyle: TextStyle(
+                    labelStyle: const TextStyle(
                         fontFamily: 'inter', fontWeight: FontWeight.w500),
                     indicatorColor: Colors.black,
-                    tabs: [
+                    tabs: const [
                       Tab(
-                        text: 'Ingridients',
+                        text: 'Ingredients',
                       ),
                       Tab(
                         text: 'Nutriments',
@@ -356,7 +356,7 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen>
                 IndexedStack(
                   index: _tabController.index,
                   children: [
-                    // Ingridients
+                    // Ingredients
                     ListView.builder(
                       shrinkWrap: true,
                       padding: EdgeInsets.zero,

@@ -45,6 +45,22 @@ class RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  dynamic emailValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email is required';
+    }
+    return null;
+  }
+
+  dynamic passwordValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    } else if (value.length < 6) {
+      return 'Password should be at least 6 characters';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!widget.testMode) {
@@ -81,12 +97,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                           border: UnderlineInputBorder(),
                           labelText: 'Enter your email'),
                       keyboardType: TextInputType.emailAddress,
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Email is required';
-                        }
-                        return null;
-                      },
+                      validator: (String? value) => emailValidator(value),
                       controller: emailController,
                     ),
                   ),
@@ -97,14 +108,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                       controller: _passwordController,
                       decoration: const InputDecoration(
                           labelText: 'Enter your password'),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Password is required';
-                        } else if (value.length < 6) {
-                          return 'Password should be at least 6 characters';
-                        }
-                        return null;
-                      },
+                      validator: (String? value) => passwordValidator(value),
                     ),
                   ),
                   ElevatedButton(

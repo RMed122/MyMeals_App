@@ -12,7 +12,7 @@ import 'package:mymeals/widget/insertproduct_popup.dart';
 import 'package:mymeals/widget/main_drawer.dart';
 
 void main() {
-  group('Widgets Test', () {
+  group('Widgets Tests: ', () {
     testWidgets('Navbar renders correctly', (tester) async {
       await tester.pumpWidget(MaterialApp(
           home: Scaffold(

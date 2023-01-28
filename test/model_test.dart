@@ -3,7 +3,7 @@ import 'package:mymeals/model/recipe.dart';
 import 'package:mymeals/model/user_model.dart';
 
 void main() {
-  group('Model Testing', () {
+  group('Model Tests: ', () {
     test("Recipe Model", () async {
       Recipe recipe = Recipe(
           calories: "100",

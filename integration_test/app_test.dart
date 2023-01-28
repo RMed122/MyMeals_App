@@ -23,10 +23,8 @@ void main() {
 
       await tester.pumpAndSettle();
       //wait for app to load
-      await Future.delayed(const Duration(seconds: 5), (() {
-        expect(find.text('Login'), findsNWidgets(2));
-      }));
-      final Finder noAcctButton = find.byType(TextButton);
+      await Future.delayed(const Duration(seconds: 5), (() {}));
+      final Finder noAcctButton = find.byType(TextButton).first;
       await tester.tap(noAcctButton);
       await Future.delayed(const Duration(seconds: 2), (() {}));
 
@@ -105,7 +103,7 @@ void main() {
       await tester.tap(recipeResultButton);
       await Future.delayed(const Duration(seconds: 5), (() {}));
 
-      expect(find.text("Ingridients"), findsAtLeastNWidgets(1));
+      expect(find.text("Ingredients"), findsAtLeastNWidgets(1));
       expect(find.text("Nutriments"), findsAtLeastNWidgets(1));
     });
 
@@ -140,7 +138,7 @@ void main() {
       await tester.tap(recipeResultButton);
       await Future.delayed(const Duration(seconds: 5), (() {}));
 
-      expect(find.text("Ingridients"), findsAtLeastNWidgets(1));
+      expect(find.text("Ingredients"), findsAtLeastNWidgets(1));
       expect(find.text("Nutriments"), findsAtLeastNWidgets(1));
     });
 

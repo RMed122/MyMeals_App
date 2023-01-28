@@ -1,5 +1,6 @@
 import 'package:mymeals/screens/register_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:mymeals/screens/resetpass_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'home_screen.dart';
@@ -60,6 +61,22 @@ class LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  dynamic emailValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email is required';
+    }
+    return null;
+  }
+
+  dynamic passwordValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    } else if (value.length < 6) {
+      return 'Password should be at least 6 characters';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!widget.testMode) {
@@ -80,7 +97,7 @@ class LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Padding(
-              padding: EdgeInsets.all(30),
+              padding: EdgeInsets.only(top: 20, bottom: 10),
               child: Center(
                   child: Image(image: AssetImage('assets/images/appLogo.png'))),
             ),
@@ -96,12 +113,7 @@ class LoginScreenState extends State<LoginScreen> {
                       decoration:
                           const InputDecoration(labelText: 'Enter your email'),
                       keyboardType: TextInputType.emailAddress,
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Email is required';
-                        }
-                        return null;
-                      },
+                      validator: (String? value) => emailValidator(value),
                     ),
                   ),
                   Padding(
@@ -111,14 +123,7 @@ class LoginScreenState extends State<LoginScreen> {
                       controller: _passwordController,
                       decoration: const InputDecoration(
                           labelText: 'Enter your password'),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Password is required';
-                        } else if (value.length < 6) {
-                          return 'Password should be at least 6 characters';
-                        }
-                        return null;
-                      },
+                      validator: (String? value) => passwordValidator(value),
                     ),
                   ),
                   ElevatedButton(
@@ -128,14 +133,16 @@ class LoginScreenState extends State<LoginScreen> {
                       child: const Text('Login')),
                   TextButton(
                       onPressed: () {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => const RegisterScreen()));
                       },
                       child: const Text('Don\'t have an account?')),
-                  const SizedBox(
-                    height: 20,
-                    child: Text("or"),
-                  ),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ResetPassScreen()));
+                      },
+                      child: const Text('Reset Password')),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
                     child: OutlinedButton.icon(

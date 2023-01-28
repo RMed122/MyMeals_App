@@ -3,7 +3,7 @@ import 'package:mymeals/services/data_services.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 
 void main() {
-  group('Data Services', () {
+  group('Data Services Tests: ', () {
     test("First Login setup creates user collection", () async {
       final mockFirestore = FakeFirebaseFirestore();
       UserDataServices inst =
