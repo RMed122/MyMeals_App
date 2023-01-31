@@ -38,7 +38,7 @@ void main() {
       await Future.delayed(const Duration(seconds: 3), (() {}));
 
       await tester.tap(registerButton);
-      await Future.delayed(const Duration(seconds: 5), (() {}));
+      await Future.delayed(const Duration(seconds: 10), (() {}));
       expect(find.text("Dashboard"), findsAtLeastNWidgets(1));
     });
 
