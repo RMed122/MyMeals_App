@@ -92,7 +92,9 @@ class RecipeSearchResultScreenState extends State<RecipeSearchResultScreen> {
         .add({'name': "Portions", 'size': data['yield'].round().toString()});
     nutriments.add({
       'name': "Calories per portion",
-      'size': (data_nutr["ENERC_KCAL"]['quantity'] / 4).round().toString() +
+      'size': (data_nutr["ENERC_KCAL"]['quantity'] / data['yield'].round())
+              .round()
+              .toString() +
           data_nutr["ENERC_KCAL"]['unit'],
     });
 

@@ -4,19 +4,19 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import "dart:math";
 
 class MealServices {
-  //DEV
-  final String _devRecipesAppID = "8a90a41c";
-  final String _devRecipesKey = "cb7c02f76fb6df5035c927e3f2b3cbaa";
+  // //DEV
+  // final String _devRecipesAppID = "8a90a41c";
+  // final String _devRecipesKey = "cb7c02f76fb6df5035c927e3f2b3cbaa";
 
-  final String _devNutriAppID = "96a68843";
-  final String _devNutriKey = "ec285d3bedaa2b44b827740d126f3dd8";
+  // final String _devNutriAppID = "96a68843";
+  // final String _devNutriKey = "ec285d3bedaa2b44b827740d126f3dd8";
 
-  // //Demo
-  // final String _devRecipesAppID = "d4ab6f06";
-  // final String _devRecipesKey = "ca16ef74cd404265cad30e26a192b5aa";
+  //Demo
+  final String _devRecipesAppID = "d4ab6f06";
+  final String _devRecipesKey = "ca16ef74cd404265cad30e26a192b5aa";
 
-  // final String _devNutriAppID = "03e8c8b8";
-  // final String _devNutriKey = "a8483822bd410870f53ef35648d49dee";
+  final String _devNutriAppID = "03e8c8b8";
+  final String _devNutriKey = "a8483822bd410870f53ef35648d49dee";
 
   dynamic barcodeScan({manualMode = false, manualBarcode = ""}) async {
     Map<String, Object> returnData = {
