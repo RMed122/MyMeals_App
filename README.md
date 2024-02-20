@@ -1,6 +1,6 @@
 # MyMeals
 
-## Developped Using Flutter
+## Developed Using Flutter
 
 Before running or building the project execute this command:
 ```console
